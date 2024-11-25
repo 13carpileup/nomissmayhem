@@ -1,5 +1,7 @@
 // Player.js
 import { CANVAS, PLAYER } from '../constants.js';
+import { HealthBar } from '../util/updateHealth.js';
+
 
 export class Player {
   constructor(x, y) {
@@ -24,6 +26,17 @@ export class Player {
     this.money = 0;
     this.keys = [];
     this.health = PLAYER.MAX_HEALTH;
+
+    this.healthBar = new HealthBar(PLAYER.MAX_HEALTH, {
+      // Optional custom settings
+      width: 200,
+      height: 20,
+      x: 20,
+      y: 20,
+      healthyColor: '#33ff33',
+      warningColor: '#ffff33',
+      dangerColor: '#ff3333'
+    });
   }
 
   handleDash(mouseX, mouseY, dashElement) {
@@ -120,7 +133,7 @@ export class Player {
       case "extrahealth":
         PLAYER.MAX_HEALTH += 10;
         this.health = PLAYER.MAX_HEALTH;
-        document.getElementById('score').textContent = `Health: ${PLAYER.MAX_HEALTH}`;
+        this.healthBar.setMaxHealth = PLAYER.MAX_HEALTH;
         break;
 
       case "super":

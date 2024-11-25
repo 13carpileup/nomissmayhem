@@ -10,13 +10,11 @@ import { Coin } from './structs/Coin.js';
 import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
-import { HealthBar } from './util/updateHealth.js';
 
 export class Game {
   constructor() {
     this.canvas = document.getElementById('gameCanvas');
     this.blurCanvas = document.getElementById('blurCanvas');
-    this.scoreElement = document.getElementById('score');
     this.moneyElement = document.getElementById('money')
     this.dashElement = document.getElementById('dash');
     this.lastBulletTime = Date.now();
@@ -48,16 +46,7 @@ export class Game {
     this.lastTime = 0;
     this.accumulator = 0;
 
-    this.healthBar = new HealthBar(PLAYER.MAX_HEALTH, {
-      // Optional custom settings
-      width: 200,
-      height: 20,
-      x: 20,
-      y: 20,
-      healthyColor: '#33ff33',
-      warningColor: '#ffff33',
-      dangerColor: '#ff3333'
-  });
+
 
     this.setup();
   }
@@ -167,7 +156,7 @@ export class Game {
   handleCollision() {
     if (!this.player.isInvulnerable) {
       this.player.health -= PLAYER.DAMAGE_PER_HIT;
-      this.healthBar.update(this.player.health);
+      this.player.healthBar.update(this.player.health);
 
       // Check if player has died
       if (this.player.health <= 0) {
@@ -453,7 +442,7 @@ export class Game {
       if (distance < this.player.radius + healing.radius) {
         console.log('pickup')
         this.player.health = PLAYER.MAX_HEALTH;
-        this.healthBar.update(this.player.health);
+        this.player.healthBar.update(this.player.health);
         return false;
       }
       return true;
