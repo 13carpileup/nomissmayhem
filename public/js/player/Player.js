@@ -134,6 +134,7 @@ export class Player {
         PLAYER.MAX_HEALTH += 10;
         this.health = PLAYER.MAX_HEALTH;
         this.healthBar.setMaxHealth = PLAYER.MAX_HEALTH;
+        this.healthBar.update(PLAYER.MAX_HEALTH);
         break;
 
       case "super":

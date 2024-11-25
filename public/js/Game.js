@@ -175,7 +175,7 @@ export class Game {
     if ((door.type=='door') && door.open==1) {
       return true;
     }
-    console.log(this.player.keys)
+    //console.log(this.player.keys)
 
     if ((door.type=='key') && this.player.keys.includes("key1")) {
       return true;
@@ -230,7 +230,7 @@ export class Game {
       //console.log(this.roomPosition[0]);
       let status = this.getCurrentRoom().travel.right
       let bool = this.checkDoor(status);
-      console.log(status)
+      //console.log(status)
       status.open = bool;
       
       if (bool) {
@@ -365,31 +365,31 @@ export class Game {
 
       switch (res) {
         case 'up':
-          if (copy.up.open==0){
+          if (copy.up.open==0&&copy.up.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
             Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.up.shotcount += 1;
           }
           break;
         case 'down':
-          if (copy.down.open==0){
+          if (copy.down.open==0&&copy.down.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
             Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.down.shotcount += 1;
           }
           break;
         case 'left':
-          if (copy.left.open==0){
+          if (copy.left.open==0&&copy.left.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
             Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.left.shotcount += 1;
           }
           break;
         case 'right':
-          if (copy.right.open==0){
+          if (copy.right.open==0&&copy.right.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
             Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.right.shotcount += 1;
           }
           break;
       }
-      console.log('checking')
+      //console.log('checking')
       res = checkCardCollision(this.getCurrentRoom(), proj);
 
       if (res) {
@@ -440,7 +440,7 @@ export class Game {
       );
       
       if (distance < this.player.radius + healing.radius) {
-        console.log('pickup')
+        //console.log('pickup')
         this.player.health = PLAYER.MAX_HEALTH;
         this.player.healthBar.update(this.player.health);
         return false;

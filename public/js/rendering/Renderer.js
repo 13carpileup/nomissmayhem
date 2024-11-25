@@ -86,13 +86,14 @@ export class Renderer {
     this.drawMotionBlur(player);
 
     // Draw player
+    this.ctx.fillStyle = "rgba(200, 0.5, 0.5, 1)";
     this.ctx.beginPath();
-    this.ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-
-    if (player.isDashing) {
-      this.ctx.fillStyle = Math.floor(Date.now() / 50) % 2 === 0 ? '#4488ff' : '#66aaff';
-    } else if (player.isInvulnerable) {
-      this.ctx.fillStyle = Math.floor(Date.now() / 100) % 2 === 0 ? '#4488ff' : '#ff4444';
+    this.ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2)
+    
+    if (player.isInvulnerable) {
+      this.ctx.fillStyle = Math.floor(Date.now() / 100) % 2 === 0 ? (player.canDash ? '#4488ff' : "#85b1ff") : '#ff4444';
+    } else if (!player.canDash) {
+      this.ctx.fillStyle = "#85b1ff";
     } else {
       this.ctx.fillStyle = '#4488ff';
     }
@@ -283,54 +284,54 @@ export class Renderer {
       }
     }
 
-    this.ctx.fillStyle = '#fff';
-    this.ctx.font = '20px Arial';
-    this.ctx.fillStyle = 'red'; // door colour
-    if (room.travel.up.type=='door') {
-      if (room.travel.up.openreq > room.travel.up.shotcount) {
-        this.ctx.fillStyle = 'red';
-      } else {
-        this.ctx.fillStyle = 'green';
+    const drawPartialDoor = (x, y, width, height, progress) => {
+      // Red background
+      this.ctx.fillStyle = 'red';
+      this.ctx.fillRect(x, y, width, height);
+
+      progress = Math.min(progress, 1)
+      
+      // Green progress
+      this.ctx.fillStyle = 'green';
+      if (width > height) { // horizontal door
+        const fillWidth = width * progress;
+        this.ctx.fillRect(x, y, fillWidth, height);
+      } else { // vertical door
+        const fillHeight = height * progress;
+        this.ctx.fillRect(x, y, width, fillHeight);
       }
-      this.ctx.fillRect(260, 0, 80, 20);
+    };
+
+    if (room.travel.up.type=='door') {
+      const progress = room.travel.up.openreq == 0 ? 1 : room.travel.up.shotcount / room.travel.up.openreq;
+      drawPartialDoor(260, 0, 80, 20, progress);
     } else if (room.travel.up.type=='key') {
       this.ctx.fillStyle = 'yellow';
       this.ctx.fillRect(260, 0, 80, 20);
     }
 
     if (room.travel.down.type=='door') {
-      if (room.travel.down.openreq > room.travel.down.shotcount) {
-        this.ctx.fillStyle = 'red';
-      } else {
-        this.ctx.fillStyle = 'green';
-      }
-      this.ctx.fillRect(260, 580, 80, 20);
+      const progress = room.travel.down.openreq == 0 ? 1 : room.travel.down.shotcount / room.travel.down.openreq;
+      drawPartialDoor(260, 580, 80, 20, progress);
     } else if (room.travel.down.type=='key') {
       this.ctx.fillStyle = 'yellow';
       this.ctx.fillRect(260, 580, 80, 20);
     }
 
     if (room.travel.left.type=='door') {
-      if (room.travel.left.openreq > room.travel.left.shotcount) {
-        this.ctx.fillStyle = 'red';
-      } else {
-        this.ctx.fillStyle = 'green';
-      }
-      this.ctx.fillRect(0, 260, 20, 80);
+      const progress = room.travel.left.openreq == 0 ? 1 : room.travel.left.shotcount / room.travel.left.openreq;
+      drawPartialDoor(0, 260, 20, 80, progress);
     } else if (room.travel.left.type=='key') {
       this.ctx.fillStyle = 'yellow';
       this.ctx.fillRect(0, 260, 20, 80);
     }
 
     if (room.travel.right.type=='door') {
-      if (room.travel.right.openreq > room.travel.right.shotcount) {
-        this.ctx.fillStyle = 'red';
-      } else {
-        this.ctx.fillStyle = 'green';
-      }
-      this.ctx.fillRect(580, 260, 20, 80);
+      const progress = room.travel.right.openreq == 0 ? 1 : room.travel.right.shotcount / room.travel.right.openreq;
+      drawPartialDoor(580, 260, 20, 80, progress);
     } else if (room.travel.right.type=='key') {
       this.ctx.fillStyle = 'yellow';
       this.ctx.fillRect(580, 260, 20, 80);
-    }}
+    }
+  }
 }

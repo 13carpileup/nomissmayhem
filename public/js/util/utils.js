@@ -10,6 +10,6 @@ export function preloadImage(url)
 {
   url.forEach((link) => {
     var img=new Image();
-    img.src=url;
+    img.src=link;
   }) 
 }

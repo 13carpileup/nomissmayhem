@@ -340,11 +340,16 @@ export const Rooms = [
     [nullTile, nullTile, tutorialRoom]
 ];
 
+// preloading room imgs
+let urls = new Set();
+
 Rooms.forEach((row)=> {
     row.forEach((room) => {
-        preloadImage(["assets"+room.background])
+        urls.add("assets"+room.background);
     })
 });
+
+preloadImage(urls);
 
 console.log("DONE PRELOADING")
 
