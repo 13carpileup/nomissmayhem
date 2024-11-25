@@ -1,5 +1,5 @@
 // Projectile.js
-import { CANVAS, PROJECTILE } from './constants.js';
+import { CANVAS, PROJECTILE } from '../constants.js';
 
 export class Projectile {
   constructor(x, y, angle, playerRadius, radius) {  // Add playerRadius parameter

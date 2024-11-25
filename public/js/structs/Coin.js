@@ -1,4 +1,4 @@
-import { COIN } from './constants.js';
+import { COIN } from '../constants.js';
 
 export class Coin {
     constructor(x, y, value, type) {

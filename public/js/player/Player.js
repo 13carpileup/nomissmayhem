@@ -1,5 +1,5 @@
 // Player.js
-import { CANVAS, PLAYER } from './constants.js';
+import { CANVAS, PLAYER } from '../constants.js';
 
 export class Player {
   constructor(x, y) {

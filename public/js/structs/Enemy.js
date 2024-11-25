@@ -1,5 +1,5 @@
 // Enemy.js
-import { CANVAS } from './constants.js';
+import { CANVAS } from '../constants.js';
 import { Projectile } from './Projectile.js';
 
 // Base Enemy class

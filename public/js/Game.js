@@ -1,15 +1,15 @@
-import { Player } from './Player.js';
-import { Projectile } from './Projectile.js';
-import { Renderer } from './Renderer.js';
-import { checkCollision } from './utils.js';
-import { Rooms, startIndex, checkDoorCollision } from './Rooms.js';
-import { Music } from './Music.js';
-import { Key } from './Key.js';
+import { Player } from './player/Player.js';
+import { Projectile } from './structs/Projectile.js';
+import { Renderer } from './rendering/Renderer.js';
+import { checkCollision } from './util/utils.js';
+import { Rooms, startIndex, checkDoorCollision } from './structs/Rooms.js';
+import { Music } from './util/Music.js';
+import { Key } from './structs/Key.js';
 import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
-import { Coin } from './Coin.js';
-import { checkCardCollision } from './Store.js';
-import { createMinimap, updateMinimap } from './minimap.js';
-import { Health } from './Health.js';
+import { Coin } from './structs/Coin.js';
+import { checkCardCollision } from './structs/Store.js';
+import { createMinimap, updateMinimap } from './ui/minimap.js';
+import { Health } from './structs/Health.js';
 
 export class Game {
   constructor() {
