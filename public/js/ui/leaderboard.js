@@ -7,13 +7,13 @@ export class Leaderboard {
 
     async updateLeaderboard() {
         try {
-            const response = await fetch('/api/leaderboard');
+            const response = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard');
             const leaderboardData = await response.json();
             
             this.leaderboardElement.innerHTML = leaderboardData
                 .map((entry, index) => `
                     <div class="leaderboard-entry">
-                        ${index + 1}. ${entry.name} - ${entry.score} seconds (${entry.time})
+                        ${index + 1}. ${entry.name} - ${entry.time / 1000} seconds
                     </div>
                 `)
                 .join('');

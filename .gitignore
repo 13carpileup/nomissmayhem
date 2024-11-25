@@ -3,3 +3,9 @@ node_modules/*
 package-lock.json
 .vercel
 pnpm-lock.json
+api/target/*
+
+
+# Added by cargo
+
+/target

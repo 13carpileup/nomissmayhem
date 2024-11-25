@@ -578,20 +578,18 @@ export class Game {
     submitButton.style.padding = '10px 20px';
     submitButton.style.margin = '10px';
     submitButton.style.cursor = 'pointer';
-    let time = this.elapsedTime / 1000;
+    let time = this.elapsedTime;
     submitButton.onclick = async () => {
         if (nameInput.value.trim()) {
             try {
-
-                const response = await fetch('/api/leaderboard', {
+                const response = await fetch('https://nomissmayhem.shuttleapp.rs/score', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         name: nameInput.value.trim(),
-                        score: time,
-                        time: this.timerElement.textContent
+                        time: time,
                     })
                 });
                 
@@ -601,12 +599,12 @@ export class Game {
                     nameInput.disabled = true;
                     
                     // Show leaderboard
-                    const leaderboardData = await fetch('/api/leaderboard').then(res => res.json());
+                    const leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
                     const leaderboardDiv = document.createElement('div');
                     leaderboardDiv.innerHTML = `
                         <h2 style="color: white">Top Scores</h2>
                         ${leaderboardData.map((entry, index) => `
-                            <p style="color: white">${index + 1}. ${entry.name} - ${entry.score} coins (${entry.time})</p>
+                            <p style="color: white">${index + 1}. ${entry.name} - ${entry.time/1000} seconds</p>
                         `).join('')}
                     `;
                     overlay.appendChild(leaderboardDiv);
