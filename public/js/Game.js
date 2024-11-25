@@ -20,6 +20,7 @@ export class Game {
     this.dashElement = document.getElementById('dash');
     this.lastBulletTime = Date.now();
     this.music = new Music();
+    this.lastUpdate = Date.now();
 
     this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
     this.renderer = new Renderer(this.canvas, this.blurCanvas);
@@ -40,6 +41,10 @@ export class Game {
     this.startTime = Date.now();
     this.elapsedTime = 0;
     this.isGameRunning = true;
+
+    this.fixedTimeStep = 1000/60; // 60 fps physics update rate
+    this.lastTime = 0;
+    this.accumulator = 0;
 
     this.setup();
   }
@@ -416,17 +421,33 @@ export class Game {
     this.updateTimer();
   } 
 
-  gameLoop() {
-    if (!this.isGameRunning) return; // Stop the game loop if game is over
+  gameLoop(currentTime = 0) {
+    if (!this.isGameRunning) return;
+  
+    // Convert time to seconds
+    const deltaTime = currentTime - this.lastTime;
+    this.lastTime = currentTime;
     
-    this.update();
-    this.renderer.render(this.player,
-                         this.getCurrentRoom(),
-                         this.mouseX,
-                         this.mouseY,
-                        );
+    // Accumulate time since last frame
+    this.accumulator += deltaTime;
+    
+    // Update physics in fixed time steps
+    while (this.accumulator >= this.fixedTimeStep) {
+      this.update(this.fixedTimeStep);
+      this.accumulator -= this.fixedTimeStep;
+    }
+    
+    // Render at screen refresh rate
+    this.renderer.render(
+      this.player,
+      this.getCurrentRoom(),
+      this.mouseX,
+      this.mouseY
+    );
 
-    requestAnimationFrame(() => this.gameLoop());
+    console.log(currentTime);
+    
+    requestAnimationFrame((time) => this.gameLoop(time));
   }
 
   getCurrentRoom() {

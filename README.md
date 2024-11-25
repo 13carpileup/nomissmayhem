@@ -11,4 +11,3 @@ Initially created for [Hack Club's](https://hackclub.com/) [Counterspell Game Ja
 - Music designed by [@akanjinucylia](https://github.com/akanjinucylia)
 
 Further developed by [@13carpileup](https://github.com/13carpileup)
-

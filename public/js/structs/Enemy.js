@@ -8,7 +8,7 @@ export class Enemy {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.speed = 1;
+        this.speed = 1.7;
         this.health = 100;
         this.type = 'regular';
         this.isActive = true;
@@ -117,7 +117,7 @@ export class AttackerEnemy extends Enemy {
         this.attackCooldown = 2000; // ms
         this.lastAttack = 0;
         this.minDistanceFromPlayer = this.radius * 12; // Increased distance for attacker
-        this.projectileSpeed = 10; // Projectile speed
+        this.projectileSpeed = 6; // Projectile speed
         this.coinDrop = {
             type: 'silver',
             value: 2
