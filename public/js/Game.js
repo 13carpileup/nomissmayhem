@@ -10,6 +10,7 @@ import { Coin } from './structs/Coin.js';
 import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
+import { HealthBar } from './util/updateHealth.js';
 
 export class Game {
   constructor() {
@@ -46,6 +47,17 @@ export class Game {
     this.fixedTimeStep = 1000/60; // 60 fps physics update rate
     this.lastTime = 0;
     this.accumulator = 0;
+
+    this.healthBar = new HealthBar(PLAYER.MAX_HEALTH, {
+      // Optional custom settings
+      width: 200,
+      height: 20,
+      x: 20,
+      y: 20,
+      healthyColor: '#33ff33',
+      warningColor: '#ffff33',
+      dangerColor: '#ff3333'
+  });
 
     this.setup();
   }
@@ -155,7 +167,7 @@ export class Game {
   handleCollision() {
     if (!this.player.isInvulnerable) {
       this.player.health -= PLAYER.DAMAGE_PER_HIT;
-      this.scoreElement.textContent = `Health: ${this.player.health}`;
+      this.healthBar.update(this.player.health);
 
       // Check if player has died
       if (this.player.health <= 0) {
@@ -441,7 +453,7 @@ export class Game {
       if (distance < this.player.radius + healing.radius) {
         console.log('pickup')
         this.player.health = PLAYER.MAX_HEALTH;
-        this.scoreElement.textContent = `Health: ${this.player.health}`;
+        this.healthBar.update(this.player.health);
         return false;
       }
       return true;
