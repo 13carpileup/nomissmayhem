@@ -13,7 +13,7 @@ export class Leaderboard {
             this.leaderboardElement.innerHTML = leaderboardData
                 .map((entry, index) => `
                     <div class="leaderboard-entry">
-                        ${index + 1}. ${entry.name} - ${entry.score} points (${entry.time})
+                        ${index + 1}. ${entry.name} - ${entry.score} seconds (${entry.time})
                     </div>
                 `)
                 .join('');

@@ -27,6 +27,7 @@ export class Game {
     this.roomPosition = startIndex;
 
     this.hitCount = 0;
+    this.isMouseDown = false;
     this.mouseX = 0;
     this.mouseY = 0;
     this.keys = {
@@ -120,6 +121,19 @@ export class Game {
       this.mouseX = e.clientX - rect.left;
       this.mouseY = e.clientY - rect.top;
     });
+
+    this.canvas.addEventListener('mousedown', () => {
+      this.isMouseDown = true;
+    });
+  
+    this.canvas.addEventListener('mouseup', () => {
+      this.isMouseDown = false;
+    });
+  
+    this.canvas.addEventListener('mouseleave', () => {
+      this.isMouseDown = false;
+    });
+  
 
     this.canvas.addEventListener('click', (e) => {
       const currentTime = Date.now();
@@ -265,7 +279,23 @@ export class Game {
   update() {
     this.player.update(this.keys, this.mouseX, this.mouseY, this.dashElement);
 
-    
+    // mouse hold down
+    if (this.isMouseDown) {
+      const currentTime = Date.now();
+      if ((currentTime - this.lastBulletTime) >= this.player.shootCooldown) {
+        const rect = this.canvas.getBoundingClientRect();
+        const angle = Math.atan2(
+          this.mouseY - this.player.y,
+          this.mouseX - this.player.x
+        );
+        
+        this.getCurrentRoom().projectiles.push(
+          new Projectile(this.player.x, this.player.y, angle, 35, 5)
+        );
+  
+        this.lastBulletTime = currentTime;
+      }
+    }
 
     // Update enemies
     this.getCurrentRoom().enemies.forEach((enemy, index) => {
@@ -445,7 +475,7 @@ export class Game {
       this.mouseY
     );
 
-    console.log(currentTime);
+    //console.log(currentTime);
     
     requestAnimationFrame((time) => this.gameLoop(time));
   }
@@ -547,7 +577,7 @@ export class Game {
     submitButton.style.padding = '10px 20px';
     submitButton.style.margin = '10px';
     submitButton.style.cursor = 'pointer';
-    let time = minutes*60 + remainingSeconds
+    let time = this.elapsedTime / 1000;
     submitButton.onclick = async () => {
         if (nameInput.value.trim()) {
             try {
