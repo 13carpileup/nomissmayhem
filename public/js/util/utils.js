@@ -5,3 +5,11 @@ export function checkCollision(circle1, circle2) {
   const distance = Math.sqrt(dx * dx + dy * dy);
   return distance < circle1.radius + circle2.radius;
 }
+
+export function preloadImage(url)
+{
+  url.forEach((link) => {
+    var img=new Image();
+    img.src=url;
+  }) 
+}

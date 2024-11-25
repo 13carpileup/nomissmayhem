@@ -1,6 +1,7 @@
 // Room.js
 
 import { EnemyFactory } from './Enemy.js'
+import { preloadImage } from '../util/utils.js';
 
 
 const startRoom = {
@@ -338,6 +339,14 @@ export const Rooms = [
     [winningRoom, nullTile, tutorialRoom2],
     [nullTile, nullTile, tutorialRoom]
 ];
+
+Rooms.forEach((row)=> {
+    row.forEach((room) => {
+        preloadImage(["assets"+room.background])
+    })
+});
+
+console.log("DONE PRELOADING")
 
 export function checkDoorCollision(proj) {
     let x = proj.x;
