@@ -181,26 +181,27 @@ export class Game {
       }
     });
 
-    this.canvas.addEventListener('mousemove', (e) => {
+    window.addEventListener('mousemove', (e) => {
       const rect = this.canvas.getBoundingClientRect();
       this.mouseX = e.clientX - rect.left;
       this.mouseY = e.clientY - rect.top;
+      //console.log(this.mouseX, this.mouseY);
     });
 
-    this.canvas.addEventListener('mousedown', () => {
+    window.addEventListener('mousedown', () => {
       this.isMouseDown = true;
     });
   
-    this.canvas.addEventListener('mouseup', () => {
+    window.addEventListener('mouseup', () => {
       this.isMouseDown = false;
     });
   
-    this.canvas.addEventListener('mouseleave', () => {
+    window.ad dEventListener('mouseleave', () => {
       this.isMouseDown = false;
     });
   
 
-    this.canvas.addEventListener('click', (e) => {
+    window.addEventListener('click', (e) => {
       const currentTime = Date.now();
       //console.log(currentTime);
       if ((currentTime - this.lastBulletTime) >= this.player.shootCooldown) {
