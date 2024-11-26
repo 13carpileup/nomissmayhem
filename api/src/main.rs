@@ -11,22 +11,21 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use std::collections::BinaryHeap;
 use std::cmp::Reverse;
+use shuttle_persist::PersistInstance;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Entry {
     name: String,
     time: i32,
-}
+}   
 
-
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct LeaderboardEntry {
     position: usize,
     name: String,
     time: i32,
 }
 
-// Custom comparison for BinaryHeap to sort by time
 impl Ord for Entry {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.time.cmp(&other.time)
@@ -47,21 +46,38 @@ impl PartialEq for Entry {
 
 impl Eq for Entry {}
 
-type SharedState = Arc<Mutex<BinaryHeap<Reverse<Entry>>>>;
+#[derive(Clone)]
+struct AppState {
+    heap: Arc<Mutex<BinaryHeap<Reverse<Entry>>>>,
+    persist: PersistInstance,
+}
 
 async fn add_score(
-    State(state): State<SharedState>,
+    State(state): State<AppState>,
     Json(entry): Json<Entry>,
 ) -> Json<&'static str> {
-    let mut leaderboard = state.lock().await;
+    let mut leaderboard = state.heap.lock().await;
     leaderboard.push(Reverse(entry));
+    
+    // Save the updated leaderboard
+    let entries: Vec<Entry> = leaderboard
+        .iter()
+        .map(|Reverse(entry)| Entry {
+            name: entry.name.clone(),
+            time: entry.time,
+        })
+        .collect();
+    
+    state.persist.save("leaderboard", entries)
+        .expect("Failed to save leaderboard");
+        
     Json("Score added successfully")
 }
 
 async fn get_leaderboard(
-    State(state): State<SharedState>,
+    State(state): State<AppState>,
 ) -> Json<Vec<LeaderboardEntry>> {
-    let leaderboard = state.lock().await;
+    let leaderboard = state.heap.lock().await;
     let entries: Vec<LeaderboardEntry> = leaderboard
         .iter()
         .take(10)
@@ -76,8 +92,21 @@ async fn get_leaderboard(
 }
 
 #[shuttle_runtime::main]
-async fn axum() -> shuttle_axum::ShuttleAxum {
-    let shared_state = Arc::new(Mutex::new(BinaryHeap::new()));
+async fn axum(
+    #[shuttle_persist::Persist] persist: PersistInstance,
+) -> shuttle_axum::ShuttleAxum {
+    // Initialize heap with persisted data
+    let mut heap = BinaryHeap::new();
+    if let Ok(entries) = persist.load::<Vec<Entry>>("leaderboard") {
+        for entry in entries {
+            heap.push(Reverse(entry));
+        }
+    }
+
+    let shared_state = AppState {
+        heap: Arc::new(Mutex::new(heap)),
+        persist,
+    };
 
     // Configure CORS
     let cors = CorsLayer::new()
