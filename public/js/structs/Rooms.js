@@ -341,15 +341,19 @@ export const Rooms = [
 ];
 
 // preloading room imgs
-let urls = new Set();
+export function preloadRooms(rms) {
+    let urls = new Set();
 
-Rooms.forEach((row)=> {
-    row.forEach((room) => {
-        urls.add("assets"+room.background);
-    })
-});
+    rms.forEach((row)=> {
+        row.forEach((room) => {
+            urls.add("assets"+room.background);
+        })
+    });
 
-preloadImage(urls);
+    preloadImage(urls);
+}
+
+
 
 console.log("DONE PRELOADING")
 

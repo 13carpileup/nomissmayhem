@@ -2,7 +2,7 @@ import { Player } from './player/Player.js';
 import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
 import { checkCollision } from './util/utils.js';
-import { Rooms, startIndex, checkDoorCollision } from './structs/Rooms.js';
+import { Rooms, startIndex, checkDoorCollision, preloadRooms } from './structs/Rooms.js';
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
 import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
@@ -45,11 +45,74 @@ export class Game {
     this.fixedTimeStep = 1000/60; // 60 fps physics update rate
     this.lastTime = 0;
     this.accumulator = 0;
+    this.isGameStarted = false;
+    
 
+    preloadRooms(Rooms);
+    this.createStartScreen();
+  }
 
+  createStartScreen() {
+    this.startScreen = document.createElement('div');
+    this.startScreen.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    `;
 
+    const startButton = document.createElement('button');
+    startButton.textContent = 'Start Game';
+    startButton.style.cssText = `
+      padding: 20px 40px;
+      font-size: 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 20px;
+    `;
+
+    startButton.addEventListener('mouseover', () => {
+      startButton.style.backgroundColor = '#45a049';
+    });
+
+    startButton.addEventListener('mouseout', () => {
+      startButton.style.backgroundColor = '#4CAF50';
+    });
+
+    const title = document.createElement('h1');
+    title.textContent = 'No Miss Mayhem';
+    title.style.cssText = `
+      color: white;
+      font-size: 48px;
+      margin-bottom: 20px;
+    `;
+
+    startButton.addEventListener('click', () => {
+      this.startGame();
+    });
+
+    this.startScreen.appendChild(title);
+    this.startScreen.appendChild(startButton);
+    document.body.appendChild(this.startScreen);
+}
+
+  startGame() {
+    this.isGameStarted = true;
+    this.startScreen.remove();
     this.setup();
   }
+
 
   setup() {
     this.resizeCanvas();
@@ -57,11 +120,12 @@ export class Game {
 
     this.music.init();
     this.setupMusicControls();
+    
+    
+    if (!this.isGameStarted) return;
 
     this.gameLoop();
-    //console.log(Rooms)
     createMinimap(Rooms, this.roomPosition);
-
   }
 
   setupMusicControls() {
@@ -600,11 +664,12 @@ export class Game {
                     
                     // Show leaderboard
                     const leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
+                    leaderboardData.splice(12);
                     const leaderboardDiv = document.createElement('div');
                     leaderboardDiv.innerHTML = `
                         <h2 style="color: white">Top Scores</h2>
                         ${leaderboardData.map((entry, index) => `
-                            <p style="color: white">${index + 1}. ${entry.name} - ${entry.time/1000} seconds</p>
+                            <p style="color: white">${index + 1}. ${entry.name} - ${entry.time/1000} seconds  </p>
                         `).join('')}
                     `;
                     overlay.appendChild(leaderboardDiv);
