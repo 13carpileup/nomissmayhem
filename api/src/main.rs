@@ -78,16 +78,24 @@ async fn get_leaderboard(
     State(state): State<AppState>,
 ) -> Json<Vec<LeaderboardEntry>> {
     let leaderboard = state.heap.lock().await;
-    let entries: Vec<LeaderboardEntry> = leaderboard
+    let mut entries: Vec<LeaderboardEntry> = leaderboard
         .iter()
-        .take(10)
         .enumerate()
         .map(|(i, Reverse(entry))| LeaderboardEntry {
-            position: i + 1,
+            position: i + 1, 
             name: entry.name.clone(),
             time: entry.time,
         })
         .collect();
+
+    // Sort by time ascending
+    entries.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(std::cmp::Ordering::Equal));
+    
+    // Update positions after sorting
+    for (i, entry) in entries.iter_mut().enumerate() {
+        entry.position = i + 1;
+    }
+
     Json(entries)
 }
 
@@ -114,6 +122,7 @@ async fn axum(
         .allow_methods([Method::GET, Method::POST])
         .allow_headers(Any);
 
+        
     let router = Router::new()
         .route("/score", post(add_score))
         .route("/leaderboard", get(get_leaderboard))

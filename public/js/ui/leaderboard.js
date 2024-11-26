@@ -1,7 +1,7 @@
 export class Leaderboard {
     constructor() {
         this.leaderboardElement = document.getElementById('leaderboard-entries');
-        this.updateInterval = 1000; // Update every 5 seconds
+        this.updateInterval = 5000; // Update every 5 seconds
         this.startUpdating();
     }
 
@@ -10,6 +10,8 @@ export class Leaderboard {
             const response = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard');
             const leaderboardData = await response.json();
             
+            leaderboardData.splice(10);
+
             this.leaderboardElement.innerHTML = leaderboardData
                 .map((entry, index) => `
                     <div class="leaderboard-entry">
