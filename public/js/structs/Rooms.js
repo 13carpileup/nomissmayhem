@@ -12,7 +12,7 @@ const startRoom = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
     ],
     projectiles: [],
     coins: [],
@@ -29,7 +29,7 @@ const emptyRoom = {
         left: { type: "door", open: 0, openreq: 6, shotcount: 0 },
         right: { type: "wall", open: 0, openreq: 10, shotcount: 0 },
     },
-    enemies: [  
+    beginEnemies: [  
         EnemyFactory.createEnemy('attacker', 150, 100, 'keyer', true),
         EnemyFactory.createEnemy('attacker', 250, 200, 'keyless'),
     ],
@@ -50,7 +50,7 @@ const testRoom = {
         left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100),
     ],
     projectiles: [],
@@ -68,7 +68,7 @@ const shopRoom = {
         left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         
     ],
     projectiles: [],
@@ -89,7 +89,7 @@ const nullTile = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         
     ],
     projectiles: [],
@@ -107,7 +107,7 @@ const tutorialRoom = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         
     ],
     projectiles: [],
@@ -126,7 +126,8 @@ const tutorialRoom2 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    enemies: [EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true)],
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true)
     ],
     projectiles: [],
@@ -145,7 +146,7 @@ const tutorialRoom3 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100),
         EnemyFactory.createEnemy('attacker', 400, 100)
@@ -166,7 +167,7 @@ const defaultRoom04 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "door", open: 0, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100),
         EnemyFactory.createEnemy('regular', 250, 500),
@@ -188,7 +189,7 @@ const defaultRoom14 = {
         left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('attacker', 150, 100),
         EnemyFactory.createEnemy('attacker', 200, 400,'', false, true),
         EnemyFactory.createEnemy('regular', 300, 100),
@@ -209,7 +210,7 @@ const defaultRoom05 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 400, 200),
         EnemyFactory.createEnemy('attacker', 250, 500),
         EnemyFactory.createEnemy('regular', 200, 200)
@@ -230,7 +231,7 @@ const storeRoom15 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
 
     ],
     projectiles: [],
@@ -251,7 +252,7 @@ const defaultRoom06 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 300, 200)
     ],
@@ -271,7 +272,7 @@ const defaultRoom07 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "door", open: 0, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100, '', false, true),
         EnemyFactory.createEnemy('regular', 250, 500),
@@ -293,7 +294,7 @@ const keyRoom = {
         left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
         EnemyFactory.createEnemy('attacker', 150, 100), 
         EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true, 50, 500),
         EnemyFactory.createEnemy('attacker', 250, 500),
@@ -316,7 +317,7 @@ const winningRoom = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [
+    beginEnemies: [
 
     ],
     projectiles: [],

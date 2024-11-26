@@ -13,3 +13,8 @@ export function preloadImage(url)
     img.src=link;
   }) 
 }
+
+export function Clone(x) {
+  for(p in x)
+  this[p] = (typeof(x[p]) == 'object')? new Clone(x[p]) : x[p];
+}

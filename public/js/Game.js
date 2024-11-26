@@ -1,7 +1,7 @@
 import { Player } from './player/Player.js';
 import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
-import { checkCollision } from './util/utils.js';
+import { checkCollision, Clone } from './util/utils.js';
 import { Rooms, startIndex, checkDoorCollision, preloadRooms } from './structs/Rooms.js';
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
@@ -10,9 +10,16 @@ import { Coin } from './structs/Coin.js';
 import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
-
+import {Enemy, EnemyFactory} from './structs/Enemy.js';
+  
 export class Game {
   constructor() {
+    this.init();
+  }
+
+  init() {
+    console.log("Initializing...")
+
     this.canvas = document.getElementById('gameCanvas');
     this.blurCanvas = document.getElementById('blurCanvas');
     this.moneyElement = document.getElementById('money')
@@ -23,7 +30,26 @@ export class Game {
 
     this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
     this.renderer = new Renderer(this.canvas, this.blurCanvas);
-    this.roomPosition = startIndex;
+    this.roomPosition = [...startIndex]
+    this.Rooms = Rooms.map(row => 
+      row.map(room => {
+          // reset room properties
+          room.enemies = room.beginEnemies
+          room.travel.up.open = 0, room.travel.up.shotcount = 0;
+          room.travel.down.open = 0, room.travel.down.shotcount = 0;
+          room.travel.left.open = 0, room.travel.left.shotcount = 0;
+          room.travel.right.open = 0, room.travel.right.shotcount = 0;
+          room.projectiles = [], room.coins = [], room.health = [], room.keys = [], room.visited = 0
+          return room;
+      })
+  );
+
+  this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
+  
+    
+  
+
+    console.log("reinit log: ", this.roomPosition, startIndex);
 
     this.hitCount = 0;
     this.isMouseDown = false;
@@ -49,7 +75,7 @@ export class Game {
     
 
     preloadRooms(Rooms);
-    this.createStartScreen();
+    this.createStartScreen(); 
   }
 
   createStartScreen() {
@@ -125,7 +151,7 @@ export class Game {
     if (!this.isGameStarted) return;
 
     this.gameLoop();
-    createMinimap(Rooms, this.roomPosition);
+    createMinimap(this.Rooms, this.roomPosition);
   }
 
   setupMusicControls() {
@@ -271,7 +297,7 @@ export class Game {
         this.player.y = 560
         this.player.x = 300
         this.getCurrentRoom().visited = 1;
-        createMinimap(Rooms, this.roomPosition);
+        createMinimap(this.Rooms, this.roomPosition);
       }
     }
     //down
@@ -287,7 +313,7 @@ export class Game {
         this.player.y = 40
         this.player.x = 300
         this.getCurrentRoom().visited = 1;
-        createMinimap(Rooms, this.roomPosition);
+        createMinimap(this.Rooms, this.roomPosition);
       }
     }
     //right
@@ -303,7 +329,7 @@ export class Game {
         this.player.x = 40
         this.player.y = 300
         this.getCurrentRoom().visited = 1;
-        createMinimap(Rooms, this.roomPosition);
+        createMinimap(this.Rooms, this.roomPosition);
       }
     }
     //left
@@ -319,7 +345,7 @@ export class Game {
         this.player.x = 560
         this.player.y = 300
         this.getCurrentRoom().visited = 1;
-        createMinimap(Rooms, this.roomPosition);
+        createMinimap(this.Rooms, this.roomPosition);
       }
     }
     
@@ -364,9 +390,13 @@ export class Game {
     }
 
     // Update enemies
+    // console.log(this.getCurrentRoom().beginEnemies)
     this.getCurrentRoom().enemies.forEach((enemy, index) => {
       if (enemy.isActive) {
+        console.log(enemy)
+        console.log(enemy.x)
         const enemyProjectile = enemy.update(this.player, Date.now());
+        console.log(enemyProjectile)
 
         // If enemy fired a projectile, add it to projectiles array
         if (enemyProjectile) {
@@ -426,31 +456,31 @@ export class Game {
 
       let res = checkDoorCollision(proj);
 
-      let copy = Rooms[this.roomPosition[0]][this.roomPosition[1]].travel
+      let copy = this.Rooms[this.roomPosition[0]][this.roomPosition[1]].travel
 
       switch (res) {
         case 'up':
           if (copy.up.open==0&&copy.up.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
-            Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.up.shotcount += 1;
+            this.Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.up.shotcount += 1;
           }
           break;
         case 'down':
           if (copy.down.open==0&&copy.down.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
-            Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.down.shotcount += 1;
+            this.Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.down.shotcount += 1;
           }
           break;
         case 'left':
           if (copy.left.open==0&&copy.left.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
-            Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.left.shotcount += 1;
+            this.Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.left.shotcount += 1;
           }
           break;
         case 'right':
           if (copy.right.open==0&&copy.right.type=='door'){
             this.getCurrentRoom().projectiles.splice(i, 1);
-            Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.right.shotcount += 1;
+            this.Rooms[this.roomPosition[0]][this.roomPosition[1]].travel.right.shotcount += 1;
           }
           break;
       }
@@ -462,7 +492,7 @@ export class Game {
           this.player.addPowerup(res[1][0]);
           this.player.addMoney(-1*res[1][1]);
 
-          Rooms[this.roomPosition[0]][this.roomPosition[1]].bought[res[0]] = 1;
+          this.Rooms[this.roomPosition[0]][this.roomPosition[1]].bought[res[0]] = 1;
           this.getCurrentRoom().projectiles.splice(i, 1);
         }
 
@@ -547,7 +577,7 @@ export class Game {
   }
 
   getCurrentRoom() {
-    return Rooms[this.roomPosition[0]][this.roomPosition[1]];
+    return this.Rooms[this.roomPosition[0]][this.roomPosition[1]];
   }
 
   pauseTimer() {
@@ -579,6 +609,7 @@ export class Game {
     overlay.style.borderRadius = '10px';
     overlay.style.textAlign = 'center';
     overlay.style.zIndex = '1000';
+    overlay.id = "gameOver";
     
     // Add game over text
     const gameOverText = document.createElement('h1');
@@ -593,7 +624,8 @@ export class Game {
     retryButton.style.marginTop = '20px';
     retryButton.style.cursor = 'pointer';
     retryButton.onclick = () => {
-      location.reload(); // Reload the page to restart the game
+      document.getElementById("gameOver").remove();
+      this.init() // reinitalize game state
     };
     overlay.appendChild(retryButton);
     
