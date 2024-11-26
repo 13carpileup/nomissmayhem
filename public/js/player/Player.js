@@ -1,6 +1,6 @@
 // Player.js
 import { CANVAS, PLAYER } from '../constants.js';
-import { HealthBar } from '../util/updateHealth.js';
+import { PixelHealthBar } from '../util/updateHealth.js';
 
 
 export class Player {
@@ -27,7 +27,7 @@ export class Player {
     this.keys = [];
     this.health = PLAYER.MAX_HEALTH;
 
-    this.healthBar = new HealthBar(PLAYER.MAX_HEALTH, {
+    this.healthBar = new PixelHealthBar(PLAYER.MAX_HEALTH, {
       // Optional custom settings
       width: 200,
       height: 20,
@@ -132,9 +132,10 @@ export class Player {
       
       case "extrahealth":
         PLAYER.MAX_HEALTH += 10;
+        console.log("UPDATE ", PLAYER.MAX_HEALTH);
         this.health = PLAYER.MAX_HEALTH;
-        this.healthBar.setMaxHealth = PLAYER.MAX_HEALTH;
-        this.healthBar.update(PLAYER.MAX_HEALTH);
+        this.healthBar.setMaxHealth(PLAYER.MAX_HEALTH);
+        this.healthBar.update(PLAYER.MAX_HEALTH); 
         break;
 
       case "super":

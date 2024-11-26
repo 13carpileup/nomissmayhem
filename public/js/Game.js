@@ -10,7 +10,7 @@ import { Coin } from './structs/Coin.js';
 import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
-import {Enemy, EnemyFactory} from './structs/Enemy.js';
+import { Enemy, EnemyFactory } from './structs/Enemy.js';
   
 export class Game {
   constructor() {
@@ -42,7 +42,7 @@ export class Game {
           room.projectiles = [], room.coins = [], room.health = [], room.keys = [], room.visited = 0
           return room;
       })
-  );
+  );  
 
   this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
   
