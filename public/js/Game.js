@@ -196,7 +196,7 @@ export class Game {
       this.isMouseDown = false;
     });
   
-    window.ad dEventListener('mouseleave', () => {
+    window.addEventListener('mouseleave', () => {
       this.isMouseDown = false;
     });
   
