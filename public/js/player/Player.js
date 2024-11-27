@@ -50,7 +50,7 @@ export class Player {
 
       this.canDash = false;
       this.isDashing = true;
-      dashElement.textContent = "Dash Cooling...";
+      dashElement.textContent = "DASN COOLING...";
 
       setTimeout(() => {
         this.isDashing = false;
@@ -58,7 +58,7 @@ export class Player {
 
       setTimeout(() => {
         this.canDash = true;
-        dashElement.textContent = "Dash Ready!";
+        dashElement.textContent = "DASH READY!";
       }, this.dashCooldown);
     }
   }
@@ -112,8 +112,7 @@ export class Player {
   addMoney(amount) {
     this.money += amount;
     this.moneyElement = document.getElementById('money');
-    console.log(this.money)
-    this.moneyElement.textContent = `Money: ${this.money}`;
+    this.moneyElement.textContent = `COINS: ${this.money}`;
   }
 
   getMoney() {

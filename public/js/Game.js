@@ -27,6 +27,8 @@ export class Game {
     this.lastBulletTime = Date.now();
     this.music = new Music();
     this.lastUpdate = Date.now();
+    this.moneyElement = document.getElementById('money');
+    this.moneyElement.textContent = `COINS: 0`;
 
     this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
     this.renderer = new Renderer(this.canvas, this.blurCanvas);
@@ -515,7 +517,7 @@ export class Game {
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
       
-      this.timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+      this.timerElement.textContent = `TIME: ${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
   }
 
