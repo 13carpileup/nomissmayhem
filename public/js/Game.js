@@ -93,110 +93,186 @@ export class Game {
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #000;
-        background-image: url('dungeon-background.png');
-        background-size: cover;
-        background-position: center;
+        background-color: #111;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         z-index: 1000;
+        image-rendering: pixelated;
+        overflow: hidden;
+    `;
+
+    // Create CRT scanline effect
+    const scanlines = document.createElement('div');
+    scanlines.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            transparent 50%,
+            rgba(0, 0, 0, 0.1) 50%
+        );
+        background-size: 100% 4px;
+        pointer-events: none;
+        z-index: 1001;
+    `;
+
+    // Create glowing title container
+    const titleContainer = document.createElement('div');
+    titleContainer.style.cssText = `
+        position: relative;
+        margin-bottom: 48px;
+        animation: float 4s ease-in-out infinite;
     `;
 
     const title = document.createElement('h1');
-    title.textContent = 'No Miss Mayhem';
+    title.textContent = 'NO MISS MAYHEM';
     title.style.cssText = `
-        color: #FFD700;
-        font-family: 'PixelFont', monospace;
+        color: #ff4444;
+        font-family: 'Press Start 2P', monospace;
         font-size: 48px;
-        margin-bottom: 20px;
-        text-shadow: 3px 3px 0px #8B4513;
+        text-align: center;
+        text-shadow: 
+            0 0 10px #ff0000,
+            4px 4px 0 #660000;
+        letter-spacing: 2px;
+        animation: pulse 2s ease-in-out infinite;
+    `;
+
+    const subtitle = document.createElement('div');
+    subtitle.textContent = 'BULLET HELL';
+    subtitle.style.cssText = `
+        color: #aaa;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 16px;
+        text-align: center;
+        margin-top: 16px;
+        letter-spacing: 4px;
+    `;
+
+    // Create menu container
+    const menuContainer = document.createElement('div');
+    menuContainer.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        background: #000;
+        padding: 32px;
+        border: 4px solid #444;
+        box-shadow: 0 0 0 4px #111, 0 0 0 8px #444;
     `;
 
     const startButton = document.createElement('button');
-    startButton.textContent = 'Start Game';
+    startButton.textContent = 'START GAME';
     startButton.style.cssText = `
-        padding: 15px 30px;
-        font-size: 24px;
-        font-family: 'PixelFont', monospace;
-        background-color: #8B0000;
-        color: white;
-        border: 4px solid #FFD700;
-        border-radius: 0;
+        padding: 16px 32px;
+        font-size: 20px;
+        font-family: 'Press Start 2P', monospace;
+        background-color: #222;
+        color: #fff;
+        border: 4px solid #444;
         cursor: pointer;
-        transition: transform 0.1s;
-        box-shadow: 0 6px 0 #8B4513;
+        transition: all 0.1s;
+        position: relative;
+        text-shadow: 2px 2px #000;
     `;
 
-    startButton.addEventListener('mouseover', () => {
-        startButton.style.transform = 'scale(1.1)';
-    });
+    // Create decorative pixel art borders
+    const createPixelBorder = () => {
+        const border = document.createElement('div');
+        border.style.cssText = `
+            position: absolute;
+            width: 100%;
+            height: 16px;
+            background-color: #222;
+            border-top: 4px solid #444;
+            border-bottom: 4px solid #444;
+        `;
+        return border;
+    };
 
-    startButton.addEventListener('mouseout', () => {
+    const topBorder = createPixelBorder();
+    topBorder.style.top = '0';
+    const bottomBorder = createPixelBorder();
+    bottomBorder.style.bottom = '0';
+
+    // Add animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add button interactions
+    startButton.onmouseover = () => {
+        startButton.style.backgroundColor = '#333';
+        startButton.style.transform = 'scale(1.1)';
+    };
+    startButton.onmouseout = () => {
+        startButton.style.backgroundColor = '#222';
         startButton.style.transform = 'scale(1)';
-    });
-
-    startButton.addEventListener('mousedown', () => {
+    };
+    startButton.onmousedown = () => {
         startButton.style.transform = 'scale(0.95)';
-    });
-
-    startButton.addEventListener('mouseup', () => {
+    };
+    startButton.onmouseup = () => {
         startButton.style.transform = 'scale(1.1)';
+    };
+    startButton.onclick = () => {
+        startButton.style.transform = 'scale(0.95)';
+        setTimeout(() => this.startGame(), 100);
+    };
+
+    // Add decorative pixel corners
+    const corners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'].map(position => {
+        const corner = document.createElement('div');
+        corner.style.cssText = `
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border: 4px solid #444;
+            ${position.includes('top') ? 'top: 16px' : 'bottom: 16px'};
+            ${position.includes('left') ? 'left: 16px' : 'right: 16px'};
+        `;
+        return corner;
     });
 
-    startButton.addEventListener('click', () => {
-        this.startGame();
-    });
+    // Add font
+    const fontLink = document.createElement('link');
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+    fontLink.rel = 'stylesheet';
+    document.head.appendChild(fontLink);
 
-    const pixelArtCanvas = document.createElement('canvas');
-    pixelArtCanvas.width = 100;
-    pixelArtCanvas.height = 50;
-    pixelArtCanvas.style.position = 'absolute';
-    pixelArtCanvas.style.top = '10px';
-    pixelArtCanvas.style.left = '10px';
-
-    const ctx = pixelArtCanvas.getContext('2d');
-    
-    // Draw pixel art decorations
-    function drawPixelArt() {
-        // Draw a simple skull
-        ctx.fillStyle = '#FFA500';
-        ctx.fillRect(10, 10, 4, 4);
-        ctx.fillRect(18, 10, 4, 4);
-        ctx.fillRect(14, 14, 4, 4);
-        ctx.fillRect(10, 18, 12, 4);
-
-        // Draw a simple torch
-        ctx.fillStyle = '#FF4500';
-        ctx.fillRect(40, 10, 4, 12);
-        ctx.fillRect(36, 6, 12, 4);
-        
-        // Animate torch flame
-        setInterval(() => {
-            ctx.clearRect(36, 0, 12, 6);
-            ctx.fillRect(36, Math.random() > 0.5 ? 4 : 2, 12, 4);
-        }, 200);
-    }
-
-    drawPixelArt();
-
-    this.startScreen.appendChild(pixelArtCanvas);
-    this.startScreen.appendChild(title);
-    this.startScreen.appendChild(startButton);
+    // Assemble the screen
+    titleContainer.appendChild(title);
+    titleContainer.appendChild(subtitle);
+    menuContainer.appendChild(startButton);
+    this.startScreen.appendChild(scanlines);
+    this.startScreen.appendChild(titleContainer);
+    this.startScreen.appendChild(menuContainer);
+    corners.forEach(corner => this.startScreen.appendChild(corner));
+    this.startScreen.appendChild(topBorder);
+    this.startScreen.appendChild(bottomBorder);
     document.body.appendChild(this.startScreen);
 
-    // Add pixel-like animation to the title
-    let titleOpacity = 0;
-    const fadeInTitle = () => {
-        titleOpacity += 0.1;
-        title.style.opacity = Math.min(1, titleOpacity);
-        if (titleOpacity < 1) {
-            requestAnimationFrame(fadeInTitle);
-        }
-    };
-    fadeInTitle();
-}   
+    // Add fade-in animation
+    this.startScreen.style.opacity = '0';
+    requestAnimationFrame(() => {
+        this.startScreen.style.transition = 'opacity 1s';
+        this.startScreen.style.opacity = '1';
+    });
+}
 
   setup() {
     this.resizeCanvas();
@@ -733,104 +809,218 @@ export class Game {
     document.head.appendChild(fontLink);
     
     document.body.appendChild(overlay);
-}
+} 
 
-  gameWin() {
-    this.isGameRunning = false;
-    
-    // Create win overlay
-    const overlay = document.createElement('div');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '50%';
-    overlay.style.left = '50%';
-    overlay.style.transform = 'translate(-50%, -50%)';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    overlay.style.padding = '20px';
-    overlay.style.borderRadius = '10px';
-    overlay.style.textAlign = 'center';
-    overlay.style.zIndex = '1000';
-    
-    // Add win text
-    const winText = document.createElement('h1');
-    winText.textContent = 'You Won!';
-    winText.style.color = 'white';
-    overlay.appendChild(winText);
-    
-    // Add final stats
-    const statsText = document.createElement('div');
-    statsText.innerHTML = `
-        <p style="color: white">Final Time: ${this.timerElement.textContent}</p>
-        <p style="color: white">Coins Collected: ${this.player.getMoney()}</p>
-    `;
-    overlay.appendChild(statsText);
-    
-    // Add name input
-    const nameInput = document.createElement('input');
-    nameInput.type = 'text';
-    nameInput.placeholder = 'Enter your name';
-    nameInput.style.margin = '10px';
-    nameInput.style.padding = '5px';
-    overlay.appendChild(nameInput);
-    
-    // Add submit score button
-    const submitButton = document.createElement('button');
-    submitButton.textContent = 'Submit Score';
-    submitButton.style.padding = '10px 20px';
-    submitButton.style.margin = '10px';
-    submitButton.style.cursor = 'pointer';
-    let time = this.elapsedTime;
-    submitButton.onclick = async () => {
-        if (nameInput.value.trim()) {
-            try {
-                const response = await fetch('https://nomissmayhem.shuttleapp.rs/score', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: nameInput.value.trim(),
-                        time: time,
-                    })
-                });
-                
-                if (response.ok) {
-                    submitButton.textContent = 'Score Submitted!';
-                    submitButton.disabled = true;
-                    nameInput.disabled = true;
-                    
-                    // Show leaderboard
-                    const leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
-                    leaderboardData.splice(12);
-                    const leaderboardDiv = document.createElement('div');
-                    leaderboardDiv.innerHTML = `
-                        <h2 style="color: white">Top Scores</h2>
-                        ${leaderboardData.map((entry, index) => `
-                            <p style="color: white">${index + 1}. ${entry.name} - ${entry.time/1000} seconds  </p>
-                        `).join('')}
-                    `;
-                    overlay.appendChild(leaderboardDiv);
-                }
-            } catch (error) {
-                console.error('Error submitting score:', error);
-                submitButton.textContent = 'Error Submitting Score';
-            }
-        } else {
-            nameInput.style.border = '2px solid red';
-        }
-    };
-    overlay.appendChild(submitButton);
-    
-    // Add play again button
-    const playAgainButton = document.createElement('button');
-    playAgainButton.textContent = 'Play Again';
-    playAgainButton.style.padding = '10px 20px';
-    playAgainButton.style.margin = '10px';
-    playAgainButton.style.cursor = 'pointer';
-    playAgainButton.onclick = () => {
-        location.reload();
-    };
-    overlay.appendChild(playAgainButton);
-    
-    document.body.appendChild(overlay);
-  }
+gameWin() {
+  this.isGameRunning = false;
+  
+  // Create win overlay
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #111;
+      border: 4px solid #444;
+      padding: 32px;
+      text-align: center;
+      z-index: 1000;
+      min-width: 320px;
+      box-shadow: 0 0 0 4px #111, 0 0 0 8px #444;
+      image-rendering: pixelated;
+  `;
+
+  // Add CRT scanline effect
+  const scanlines = document.createElement('div');
+  scanlines.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+          transparent 50%,
+          rgba(0, 0, 0, 0.1) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1001;
+  `;
+  overlay.appendChild(scanlines);
+  
+  // Add victory text
+  const winText = document.createElement('div');
+  winText.textContent = 'VICTORY!';
+  winText.style.cssText = `
+      color: #44ff44;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 32px;
+      margin-bottom: 24px;
+      text-shadow: 4px 4px #006600;
+      animation: pulse 2s ease-in-out infinite;
+  `;
+  
+  // Add stats
+  const statsText = document.createElement('div');
+  statsText.style.cssText = `
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: #fff;
+      margin-bottom: 24px;
+      line-height: 2;
+  `;
+  statsText.innerHTML = `
+      TIME: ${this.timerElement.textContent}<br>
+      COINS: ${this.player.getMoney()}
+  `;
+  
+  // Add name input
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'ENTER NAME';
+  nameInput.style.cssText = `
+      background: #222;
+      border: 4px solid #444;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      margin: 16px 0;
+      padding: 8px;
+      text-align: center;
+      width: 80%;
+  `;
+  
+  // Add submit button
+  const submitButton = document.createElement('button');
+  submitButton.textContent = 'SUBMIT SCORE';
+  submitButton.style.cssText = `
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      padding: 12px 24px;
+      margin: 8px;
+      background-color: #222;
+      color: #fff;
+      border: 4px solid #444;
+      cursor: pointer;
+      transition: all 0.1s;
+  `;
+
+  let time = this.elapsedTime;
+  submitButton.onclick = async () => {
+      if (nameInput.value.trim()) {
+          try {
+              const response = await fetch('https://nomissmayhem.shuttleapp.rs/score', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      name: nameInput.value.trim(),
+                      time: time,
+                  })
+              });
+              
+              if (response.ok) {
+                  submitButton.textContent = 'SCORE SAVED!';
+                  submitButton.disabled = true;
+                  nameInput.disabled = true;
+                  
+                  // Show leaderboard
+                  const leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
+                  leaderboardData.splice(12);
+                  const leaderboardDiv = document.createElement('div');
+                  leaderboardDiv.style.cssText = `
+                      margin-top: 24px;
+                      font-family: 'Press Start 2P', monospace;
+                      font-size: 12px;
+                      color: #fff;
+                  `;
+                  leaderboardDiv.innerHTML = `
+                      <div style="color: #44ff44; margin-bottom: 16px;">TOP SCORES</div>
+                      ${leaderboardData.map((entry, index) => `
+                          <div style="margin: 8px 0; ${entry.name === nameInput.value.trim() ? 'color: #44ff44;' : ''}">
+                              ${(index + 1).toString().padStart(2, '0')}. ${entry.name} - ${(entry.time/1000).toFixed(2)}s
+                          </div>
+                      `).join('')}
+                  `;
+                  overlay.appendChild(leaderboardDiv);
+              }
+          } catch (error) {
+              console.error('Error submitting score:', error);
+              submitButton.textContent = 'ERROR!';
+          }
+      } else {
+          nameInput.style.border = '4px solid #ff4444';
+      }
+  };
+  
+  // Add play again button
+  const playAgainButton = document.createElement('button');
+  playAgainButton.textContent = 'PLAY AGAIN';
+  playAgainButton.style.cssText = `
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      padding: 12px 24px;
+      margin: 8px;
+      background-color: #222;
+      color: #fff;
+      border: 4px solid #444;
+      cursor: pointer;
+      transition: all 0.1s;
+  `;
+
+  // Add button hover effects
+  [submitButton, playAgainButton].forEach(button => {
+      button.onmouseover = () => {
+          button.style.backgroundColor = '#333';
+          button.style.transform = 'scale(1.1)';
+      };
+      button.onmouseout = () => {
+          button.style.backgroundColor = '#222';
+          button.style.transform = 'scale(1)';
+      };
+      button.onmousedown = () => {
+          button.style.transform = 'scale(0.95)';
+      };
+      button.onmouseup = () => {
+          button.style.transform = 'scale(1.1)';
+      };
+  });
+
+  playAgainButton.onclick = () => {
+      location.reload();
+  };
+  
+  // Add animations
+  const style = document.createElement('style');
+  style.textContent = `
+      @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.8; }
+      }
+  `;
+  document.head.appendChild(style);
+
+  // Add font
+  const fontLink = document.createElement('link');
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+  fontLink.rel = 'stylesheet';
+  document.head.appendChild(fontLink);
+  
+  // Assemble overlay
+  overlay.appendChild(winText);
+  overlay.appendChild(statsText);
+  overlay.appendChild(nameInput);
+  overlay.appendChild(submitButton);
+  overlay.appendChild(playAgainButton);
+  
+  // Add fade-in animation
+  overlay.style.opacity = '0';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+      overlay.style.transition = 'opacity 0.5s';
+      overlay.style.opacity = '1';
+  });
+}
 }
