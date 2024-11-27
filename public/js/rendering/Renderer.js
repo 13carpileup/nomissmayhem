@@ -110,11 +110,9 @@ export class Renderer {
     if (enemies && enemies.length > 0) {
       enemies.forEach(enemy => {
         if (enemy.isActive) {
-          this.ctx.beginPath();
-          this.ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-          this.ctx.fillStyle = enemy.color;
-          this.ctx.fill();
-          this.ctx.closePath();
+
+          drawPixelPlayer(this.ctx, enemy.x, enemy.y, 42, enemy.color);
+
 
           // Draw health bar
           this.ctx.fillStyle = 'red';
