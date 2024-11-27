@@ -10,44 +10,51 @@ export function createMinimap(rooms, currentPosition) {
             .minimap {
                 width: ${mapWidth}px;
                 height: ${mapHeight}px;
-                background: #333;
-                padding: 5px;
+                background: #111;
+                padding: 4px;
                 display: grid;
                 grid-template-columns: repeat(${rooms[0].length}, 1fr);
                 grid-template-rows: repeat(${rooms.length}, 1fr);
                 gap: 2px;
-                border-radius: 5px;
+                border: 4px solid #444;
+                image-rendering: pixelated;
             }
             .room {
-                background: #666;
+                background: #333;
                 position: relative;
+                box-shadow: inset 1px 1px 0 #555, inset -1px -1px 0 #222;
             }
             .room.visited {
-                background: #888;
+                background: #555;
+                box-shadow: inset 1px 1px 0 #777, inset -1px -1px 0 #444;
             }
             .room.current {
-                background: #4CAF50;
+                background: #4a4;
+                box-shadow: inset 1px 1px 0 #6c6, inset -1px -1px 0 #282;
             }
             .shop {
-                background: #2196F3;
+                background: #48a;
+                box-shadow: inset 1px 1px 0 #6ac, inset -1px -1px 0 #268;
             }
             .room.null {
-                background: black;
+                background: #000;
+                box-shadow: none;
             }
             .door {
                 position: absolute;
-                background: #FFC107;
+                background: #ca4;
             }
             .notVisited {
-                background: black;
+                background: #111;
+                box-shadow: none;
             }
             .notVisitedDoor {
                 display: none;
             }
-            .door.up { top: 0; left: 50%; width: 30%; height: 3px; transform: translateX(-50%); }
-            .door.down { bottom: 0; left: 50%; width: 30%; height: 3px; transform: translateX(-50%); }
-            .door.left { left: 0; top: 50%; width: 3px; height: 30%; transform: translateY(-50%); }
-            .door.right { right: 0; top: 50%; width: 3px; height: 30%; transform: translateY(-50%); }
+            .door.up { top: 0; left: 50%; width: 6px; height: 2px; transform: translateX(-50%); }
+            .door.down { bottom: 0; left: 50%; width: 6px; height: 2px; transform: translateX(-50%); }
+            .door.left { left: 0; top: 50%; width: 2px; height: 6px; transform: translateY(-50%); }
+            .door.right { right: 0; top: 50%; width: 2px; height: 6px; transform: translateY(-50%); }
         </style>
         <div class="minimap">
             ${rooms.map((row, i) => 
@@ -83,3 +90,4 @@ export function updateMinimap(newRow, newCol) {
     currentPosition = [newRow, newCol];
     createMinimap(Rooms, currentPosition);
 }
+

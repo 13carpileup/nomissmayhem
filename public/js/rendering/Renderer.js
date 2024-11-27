@@ -1,3 +1,5 @@
+import {drawPixelPlayer} from './pixelPlayer.js'
+
 export class Renderer {
   constructor(canvas, blurCanvas) {
     this.canvas = canvas;
@@ -79,25 +81,16 @@ export class Renderer {
     // Draw background first if loaded
     this.ctx.drawImage(this.bgImg, 0, 0, this.canvas.width, this.canvas.height);
 
-    // Add overlay effect
-    this.ctx.fillStyle = "rgba(200, 0.5, 0.5, 0)";
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-    this.drawMotionBlur(player);
-
-    // Draw player
-    this.ctx.fillStyle = "rgba(200, 0.5, 0.5, 1)";
-    this.ctx.beginPath();
-    this.ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2)
-    
+    // Determine player color
+    let color = '#4488ff'; // Default blue color
     if (player.isInvulnerable) {
-      this.ctx.fillStyle = Math.floor(Date.now() / 100) % 2 === 0 ? (player.canDash ? '#4488ff' : "#85b1ff") : '#ff4444';
+      color = Math.floor(Date.now() / 100) % 2 === 0 ? (player.canDash ? '#4488ff' : "#85b1ff") : '#ff4444';
     } else if (!player.canDash) {
-      this.ctx.fillStyle = "#85b1ff";
-    } else {
-      this.ctx.fillStyle = '#4488ff';
+      color = "#85b1ff";
     }
-    this.ctx.fill();
+
+    // Draw the pixelated player
+    drawPixelPlayer(this.ctx, player.x, player.y, 42, color);
 
     // Draw direction arrow
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
