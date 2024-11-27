@@ -1,9 +1,5 @@
 use axum::{
-    routing::{get, post},
-    Router,
-    Json,
-    extract::State,
-    http::Method,
+    extract::{Path, State}, http::Method, routing::{delete, get, post}, Json, Router
 };
 use tower_http::cors::{CorsLayer, Any};
 use serde::{Deserialize, Serialize};
@@ -97,7 +93,39 @@ async fn get_leaderboard(
     }
 
     Json(entries)
+} 
+
+async fn delete_entry(
+    State(state): State<AppState>,
+    Path(name): Path<String>,
+) -> Json<&'static str> {
+    let mut leaderboard = state.heap.lock().await;
+    let initial_len = leaderboard.len();
+    
+    // Remove the entry with the given name
+    leaderboard.retain(|Reverse(entry)| entry.name != name);
+    
+    if leaderboard.len() < initial_len {
+        // Entry was found and removed
+        // Save the updated leaderboard
+        let entries: Vec<Entry> = leaderboard
+            .iter()
+            .map(|Reverse(entry)| Entry {
+                name: entry.name.clone(),
+                time: entry.time,
+            })
+            .collect();
+        
+        state.persist.save("leaderboard", entries)
+            .expect("Failed to save leaderboard");
+        
+        Json("Entry deleted successfully")
+    } else {
+        // Entry was not found
+        Json("Entry not found")
+    }
 }
+
 
 #[shuttle_runtime::main]
 async fn axum(
@@ -119,13 +147,13 @@ async fn axum(
     // Configure CORS
     let cors = CorsLayer::new()
         .allow_origin(Any)
-        .allow_methods([Method::GET, Method::POST])
+        .allow_methods([Method::GET, Method::POST, Method::DELETE])
         .allow_headers(Any);
 
-        
     let router = Router::new()
         .route("/score", post(add_score))
         .route("/leaderboard", get(get_leaderboard))
+        .route("/entry/:name", delete(delete_entry))  // Add the new delete route
         .with_state(shared_state)
         .layer(cors);
 
