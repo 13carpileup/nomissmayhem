@@ -32,20 +32,37 @@ export class Game {
     this.renderer = new Renderer(this.canvas, this.blurCanvas);
     this.roomPosition = [...startIndex]
     this.Rooms = Rooms.map(row => 
-      row.map(room => {
-          // reset room properties
-          console.log("old enemies:", room.beginEnemies.length);
-          room.enemies = [...room.beginEnemies]
-          room.travel.up.open = 0, room.travel.up.shotcount = 0;
-          room.travel.down.open = 0, room.travel.down.shotcount = 0;
-          room.travel.left.open = 0, room.travel.left.shotcount = 0;
-          room.travel.right.open = 0, room.travel.right.shotcount = 0;
-          room.projectiles = [], room.coins = [], room.health = [], room.keys = [], room.visited = 0
-          return room;
-      })
-  );  
-
+      row.map(room => ({
+          ...room,                              
+          enemies: room.beginEnemies.map(enemy => 
+              EnemyFactory.createEnemy(
+                  enemy.type,
+                  enemy.x,
+                  enemy.y,
+                  enemy.id,
+                  enemy.hasKey,
+                  enemy.healing,
+                  enemy.radius,
+                  enemy.health
+              )
+          ),
+          travel: {                             
+              ...room.travel,
+              up: { ...room.travel.up, open: 0, shotcount: 0 },
+              down: { ...room.travel.down, open: 0, shotcount: 0 },
+              left: { ...room.travel.left, open: 0, shotcount: 0 },
+              right: { ...room.travel.right, open: 0, shotcount: 0 }
+          },
+          projectiles: [],                      
+          coins: [],
+          keys: [],
+          health: [],
+          bought: [0,0],
+          visited: 0
+      }))
+    );
   this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
+  console.log("TEST ROOM: ", this.Rooms[5][2])
   
     
   
@@ -761,7 +778,6 @@ export class Game {
 
     // Add score display (if you have scoring)
     const scoreText = document.createElement('div');
-    scoreText.textContent = `SCORE: ${this.score || 0}`;
     scoreText.style.color = '#fff';
     scoreText.style.fontFamily = "'Press Start 2P', monospace";
     scoreText.style.fontSize = '16px';
@@ -1022,5 +1038,5 @@ gameWin() {
       overlay.style.transition = 'opacity 0.5s';
       overlay.style.opacity = '1';
   });
-}
+}   
 }
