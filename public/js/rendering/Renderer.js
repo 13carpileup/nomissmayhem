@@ -183,9 +183,10 @@ export class Renderer {
     if (projectiles && projectiles.length > 0) {
       projectiles.forEach(proj => {
         this.ctx.beginPath();
-        this.ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+        
         const bounceColor = 255 - (proj.bounces * 60);
-        this.ctx.fillStyle = `rgb(255, ${bounceColor}, ${bounceColor})`;
+        let fullColour = `rgb(255, ${bounceColor}, ${bounceColor})`;
+        drawPixelPlayer(this.ctx, proj.x, proj.y, proj.radius*2, fullColour);
         this.ctx.fill();
       });
     }
