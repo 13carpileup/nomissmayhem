@@ -6,6 +6,18 @@ export class Renderer {
     this.blurCanvas = blurCanvas;
     this.ctx = canvas.getContext('2d');
     this.blurCtx = blurCanvas.getContext('2d');
+    this.crtCanvas = document.createElement('canvas');
+    this.crtCanvas.width = this.canvas.width;
+    this.crtCanvas.height = this.canvas.height;
+    this.crtCtx = this.crtCanvas.getContext('2d', { alpha: false });
+    
+    // Pre-create the gradient for vignette
+    this.vignetteGradient = this.ctx.createRadialGradient(
+        this.canvas.width/2, this.canvas.height/2, 0,
+        this.canvas.width/2, this.canvas.height/2, this.canvas.width/1.5
+    );
+    this.vignetteGradient.addColorStop(0, 'rgba(0,0,0,0)');
+    this.vignetteGradient.addColorStop(1, 'rgba(0,0,0,0.4)');
   }
 
   drawBackground() {
@@ -21,6 +33,49 @@ export class Renderer {
     );
     
   }
+
+  applyCRTEffect() {
+    // Simple wave effect using pre-created temp canvas
+    const time = Date.now() / 1000;
+    const waveAmount = Math.sin(time) * 1.5;
+    
+    this.crtCtx.drawImage(this.canvas, 
+        0, 0, this.canvas.width, this.canvas.height,
+        waveAmount, 0, this.canvas.width, this.canvas.height
+    );
+    
+    this.ctx.drawImage(this.crtCanvas, 0, 0);
+
+    // Scanlines - only every 4th line
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    for(let i = 0; i < this.canvas.height; i += 4) {
+        this.ctx.fillRect(0, i, this.canvas.width, 1);
+    }
+
+    // Subtle color shift
+    this.ctx.globalCompositeOperation = 'screen';
+    this.ctx.fillStyle = 'rgba(255, 0, 0, 0.02)';
+    this.ctx.fillRect(1, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = 'rgba(0, 255, 0, 0.02)';
+    this.ctx.fillRect(-1, 0, this.canvas.width, this.canvas.height);
+    this.ctx.globalCompositeOperation = 'source-over';
+
+    // Pre-created vignette
+    this.ctx.fillStyle = this.vignetteGradient;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Minimal noise
+    if(Math.random() < 0.02) {
+        this.ctx.fillStyle = 'rgba(255,255,255,0.015)';
+        for(let i = 0; i < 8; i++) {
+            this.ctx.fillRect(
+                Math.random() * this.canvas.width,
+                Math.random() * this.canvas.height,
+                2, 2
+            );
+        }
+    }
+}
 
   drawMotionBlur(player) {
     this.blurCtx.clearRect(0, 0, this.blurCanvas.width, this.blurCanvas.height);
@@ -92,6 +147,7 @@ export class Renderer {
     // Draw the pixelated player
     drawPixelPlayer(this.ctx, player.x, player.y, 42, color);
     this.drawMotionBlur(player);
+    
 
     // Draw direction arrow
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
@@ -325,5 +381,8 @@ export class Renderer {
       this.ctx.fillStyle = 'yellow';
       this.ctx.fillRect(580, 260, 20, 80);
     }
+
+    this.applyCRTEffect();
   }
+  
 }
