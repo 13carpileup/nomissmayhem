@@ -11,6 +11,7 @@ import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
 import { Enemy, EnemyFactory } from './structs/Enemy.js';
+import { createStartScreen } from './util/startScreen.js';
   
 export class Game {
   constructor() {
@@ -79,67 +80,124 @@ export class Game {
     this.createStartScreen(); 
   }
 
-  createStartScreen() {
-    this.startScreen = document.createElement('div');
-    this.startScreen.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    `;
-
-    const startButton = document.createElement('button');
-    startButton.textContent = 'Start Game';
-    startButton.style.cssText = `
-      padding: 20px 40px;
-      font-size: 24px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      margin: 20px;
-    `;
-
-    startButton.addEventListener('mouseover', () => {
-      startButton.style.backgroundColor = '#45a049';
-    });
-
-    startButton.addEventListener('mouseout', () => {
-      startButton.style.backgroundColor = '#4CAF50';
-    });
-
-    const title = document.createElement('h1');
-    title.textContent = 'No Miss Mayhem';
-    title.style.cssText = `
-      color: white;
-      font-size: 48px;
-      margin-bottom: 20px;
-    `;
-
-    startButton.addEventListener('click', () => {
-      this.startGame();
-    });
-
-    this.startScreen.appendChild(title);
-    this.startScreen.appendChild(startButton);
-    document.body.appendChild(this.startScreen);
-}
-
   startGame() {
     this.isGameStarted = true;
     this.startScreen.remove();
     this.setup();
   }
 
+  createStartScreen() {
+    this.startScreen = document.createElement('div');
+    this.startScreen.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        background-image: url('dungeon-background.png');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+
+    const title = document.createElement('h1');
+    title.textContent = 'No Miss Mayhem';
+    title.style.cssText = `
+        color: #FFD700;
+        font-family: 'PixelFont', monospace;
+        font-size: 48px;
+        margin-bottom: 20px;
+        text-shadow: 3px 3px 0px #8B4513;
+    `;
+
+    const startButton = document.createElement('button');
+    startButton.textContent = 'Start Game';
+    startButton.style.cssText = `
+        padding: 15px 30px;
+        font-size: 24px;
+        font-family: 'PixelFont', monospace;
+        background-color: #8B0000;
+        color: white;
+        border: 4px solid #FFD700;
+        border-radius: 0;
+        cursor: pointer;
+        transition: transform 0.1s;
+        box-shadow: 0 6px 0 #8B4513;
+    `;
+
+    startButton.addEventListener('mouseover', () => {
+        startButton.style.transform = 'scale(1.1)';
+    });
+
+    startButton.addEventListener('mouseout', () => {
+        startButton.style.transform = 'scale(1)';
+    });
+
+    startButton.addEventListener('mousedown', () => {
+        startButton.style.transform = 'scale(0.95)';
+    });
+
+    startButton.addEventListener('mouseup', () => {
+        startButton.style.transform = 'scale(1.1)';
+    });
+
+    startButton.addEventListener('click', () => {
+        this.startGame();
+    });
+
+    const pixelArtCanvas = document.createElement('canvas');
+    pixelArtCanvas.width = 100;
+    pixelArtCanvas.height = 50;
+    pixelArtCanvas.style.position = 'absolute';
+    pixelArtCanvas.style.top = '10px';
+    pixelArtCanvas.style.left = '10px';
+
+    const ctx = pixelArtCanvas.getContext('2d');
+    
+    // Draw pixel art decorations
+    function drawPixelArt() {
+        // Draw a simple skull
+        ctx.fillStyle = '#FFA500';
+        ctx.fillRect(10, 10, 4, 4);
+        ctx.fillRect(18, 10, 4, 4);
+        ctx.fillRect(14, 14, 4, 4);
+        ctx.fillRect(10, 18, 12, 4);
+
+        // Draw a simple torch
+        ctx.fillStyle = '#FF4500';
+        ctx.fillRect(40, 10, 4, 12);
+        ctx.fillRect(36, 6, 12, 4);
+        
+        // Animate torch flame
+        setInterval(() => {
+            ctx.clearRect(36, 0, 12, 6);
+            ctx.fillRect(36, Math.random() > 0.5 ? 4 : 2, 12, 4);
+        }, 200);
+    }
+
+    drawPixelArt();
+
+    this.startScreen.appendChild(pixelArtCanvas);
+    this.startScreen.appendChild(title);
+    this.startScreen.appendChild(startButton);
+    document.body.appendChild(this.startScreen);
+
+    // Add pixel-like animation to the title
+    let titleOpacity = 0;
+    const fadeInTitle = () => {
+        titleOpacity += 0.1;
+        title.style.opacity = Math.min(1, titleOpacity);
+        if (titleOpacity < 1) {
+            requestAnimationFrame(fadeInTitle);
+        }
+    };
+    fadeInTitle();
+}   
 
   setup() {
     this.resizeCanvas();
