@@ -160,7 +160,7 @@ export class Game {
     `;
 
     const subtitle = document.createElement('div');
-    subtitle.textContent = 'BULLET HELL';
+    subtitle.textContent = 'YOU ARE YOUR OWN ENEMY';
     subtitle.style.cssText = `
         color: #aaa;
         font-family: 'Press Start 2P', monospace;
