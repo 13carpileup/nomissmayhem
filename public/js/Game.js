@@ -11,7 +11,6 @@ import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
 import { Enemy, EnemyFactory } from './structs/Enemy.js';
-import { createStartScreen } from './util/startScreen.js';
   
 export class Game {
   constructor() {
@@ -77,7 +76,7 @@ export class Game {
     
 
     preloadRooms(Rooms);
-    this.createStartScreen(); 
+    this. createStartScreen(); 
   }
 
   startGame() {
