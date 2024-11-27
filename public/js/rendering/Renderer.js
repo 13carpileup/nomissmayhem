@@ -227,109 +227,92 @@ export class Renderer {
           this.ctx.stroke();
       });
   }
+    // Render cards in shop
+    if (room.type == "shop") {
+      const renderCard = (x, powerUp, bought) => {
+        if (bought) return;
 
-    // render cards in shop
-    if (room.type=="shop") {
-      let words = ''
-      let line = ''
-      let y = ''
-      let maxWidth = '';
-      let cost = ''
-      if (!room.bought[0]) {
-        // Card 1 background
-        this.ctx.fillStyle = '#2a2a2a';
-        this.ctx.fillRect(150, 35, 140, 200);
-        
-        // Inner card border
-        this.ctx.strokeStyle = '#ffd700';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(155, 40, 130, 190);
-        
-        // Title section
-        this.ctx.fillStyle = '#4a4a4a';
-        this.ctx.fillRect(155, 45, 127, 45);
-        
-        // Title text
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.font = 'bold 20px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(room.powerUps[0][2], 220, 75);
-        
-        // Description text
-        this.ctx.font = '12px Arial';
-        this.ctx.fillStyle = '#dddddd';
-        
-        // Word wrap for description
-        let words = room.powerUps[0][3].split(' ');
-        let line = '';
+        // Parchment background with texture
+        this.ctx.fillStyle = "#d4c391";
+        this.ctx.fillRect(x, 35, 140, 200);
+
+        // Add parchment texture/grain effect (less noisy)
+        this.ctx.globalAlpha = 0.1;
+        for (let i = 0; i < 200; i += 6) {
+          for (let j = 0; j < 140; j += 6) {
+            if (Math.random() > 0.7) {
+              this.ctx.fillStyle = "#b5a47c";
+              this.ctx.fillRect(x + j, 35 + i, 3, 3);
+            }
+          }
+        }
+        this.ctx.globalAlpha = 1.0;
+
+        // Aged border effect
+        this.ctx.strokeStyle = "#8b7355";
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeRect(x + 5, 40, 130, 190);
+
+        // Title banner
+        this.ctx.fillStyle = "#8b7355"; // Darker banner
+        this.ctx.fillRect(x + 10, 45, 120, 40);
+
+        // Title text with clear and readable font
+        this.ctx.fillStyle = "#ffd700";
+        this.ctx.font = "bold 18px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(powerUp[2], x + 70, 70);
+
+        // Description background for better readability
+        this.ctx.fillStyle = "#f0e6d2"; // Light background for text
+        this.ctx.fillRect(x + 10, 90, 120, 80);
+
+        // Description text with better contrast
+        this.ctx.font = "16px Arial";
+        this.ctx.fillStyle = "#4a3f2f";
+        this.ctx.textAlign = "left";
+
+        // Word wrapping for description
+        let words = powerUp[3].split(" ");
+        let line = "";
         let y = 110;
-        let maxWidth = 120;
-        
-        words.forEach(word => {
-          let testLine = line + word + ' ';
+        let maxWidth = 110;
+
+        for (const word of words) {
+          let testLine = line + word + " ";
           let metrics = this.ctx.measureText(testLine);
           if (metrics.width > maxWidth) {
-            this.ctx.fillText(line, 220, y);
-            line = word + ' ';
-            y += 20;
+            this.ctx.fillText(line, x + 15, y); // Adjusted for padding
+            line = word + " ";
+            y += 18; // Increased line spacing
           } else {
             line = testLine;
           }
-        });
-        this.ctx.fillText(line, 220, y);
-        this.ctx.font = '17px Arial Bold';
-        let cost = "$"+room.powerUps[0][1];
-        this.ctx.fillText(cost, 220, 210)
-      }
+        }
+        this.ctx.fillText(line, x + 15, y);
 
-      if (!room.bought[1]) {
-        // Card 2 background
-        this.ctx.fillStyle = '#2a2a2a';
-        this.ctx.fillRect(350, 35, 140, 200);
-        
-        // Inner card border
-        this.ctx.strokeStyle = '#ffd700';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(355, 40, 130, 190);
-        
-        // Title section
-        this.ctx.fillStyle = '#4a4a4a';
-        this.ctx.fillRect(355, 45, 127, 45);
-        
-        // Title text
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.font = 'bold 20px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(room.powerUps[1][2], 420, 75);
-        
-        // Description text
-        this.ctx.font = '12px Arial';
-        this.ctx.fillStyle = '#dddddd';
-        
-        // Word wrap for description
-        words = room.powerUps[1][3].split(' ');
-        line = '';
-        y = 110;
-        maxWidth = 120;
-        
-        words.forEach(word => {
-          let testLine = line + word + ' ';
-          let metrics = this.ctx.measureText(testLine);
-          if (metrics.width > maxWidth) {
-            this.ctx.fillText(line, 420, y);
-            line = word + ' ';
-            y += 20;
-          } else {
-            line = testLine;
-          }
-        });
-        
-        this.ctx.fillText(line, 420, y);
+        // Cost section with clearer background
+        this.ctx.fillStyle = "#8b7355"; // Dark background
+        this.ctx.fillRect(x + 20, 190, 100, 30);
 
-        this.ctx.font = '17px Arial Bold';
-        let cost = "$"+room.powerUps[1][1];
-        this.ctx.fillText(cost, 420, 210);
-      }
+        // Pixelated coin icon
+        this.ctx.fillStyle = "#ffd700";
+        const coinX = x + 30;
+        const coinY = 195;
+        this.ctx.fillRect(coinX, coinY + 5, 10, 10);
+        this.ctx.fillStyle = "#ffed4a";
+        this.ctx.fillRect(coinX + 2, coinY + 7, 6, 6);
+
+        // Cost text with readable font and spacing
+        this.ctx.font = "bold 18px Arial";
+        this.ctx.fillStyle = "#ffd700";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(powerUp[1], x + 70, 210);
+      };
+
+      // Render both cards with updated rendering
+      renderCard(150, room.powerUps[0], room.bought[0]);
+      renderCard(350, room.powerUps[1], room.bought[1]);
     }
 
     const drawPartialDoor = (x, y, width, height, progress) => {
