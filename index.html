@@ -2,28 +2,32 @@
 <html>
 <head>
     <link rel="stylesheet" href="styles/styles.css" onerror="console.error('Failed to load CSS')">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body class="noselect">
     <div id="game-container">
-        <div id="fullscreen">
-            <div id="dash">Dash Ready!</div>
-            <div id="money">Money: 0</div>
-            <div id="timer"></div>
-            <div id="map"></div>
-            <h2 id="title">NO MISS MAYHEM</h2>
-            <h2 id="link">https://nomissmayhem.vercel.app/</h2>
+        <div id="game-section">
+            <h1 id="title">NO MISS MAYHEM</h1>
+            <div id="health-bar">
+                <div id="health-bar-fill"></div>
+            </div>
+            <div id="stats-container">
+                <div id="dash" class="ui-element">⚡ DASH READY!</div>
+                <div id="money" class="ui-element">💰 GOLD: 0</div>
+                <div id="timer" class="ui-element">⌛ TIME: 00:00</div>
+            </div>
+            <div id = "map"></div>
             <canvas id="gameCanvas"></canvas>
             <canvas id="blurCanvas"></canvas>
         </div>
         
         <div id="leaderboard">
-            <h2>Leaderboard</h2>
+            <h2>CHAMPIONS</h2>
             <div id="leaderboard-entries"></div>
         </div>
     </div>
 
     <script>
-        // Test if elements are loading
         console.log('DOM loaded');
         console.log('GameCanvas:', document.getElementById('gameCanvas'));
         console.log('BlurCanvas:', document.getElementById('blurCanvas'));

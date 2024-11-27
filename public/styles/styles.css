@@ -1,24 +1,38 @@
+@font-face {
+    font-family: 'PixelFont';
+    src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+}
+
 body {
     margin: 0;
     overflow: hidden;
-    background: #000;
+    background: #0f0f1b;
+    background-image: 
+        linear-gradient(rgba(15, 15, 27, 0.9), rgba(15, 15, 27, 0.9)),
+        repeating-linear-gradient(
+            45deg,
+            #1a1a2e 0%,
+            #1a1a2e 10%,
+            #16162b 10%,
+            #16162b 20%
+        );
 }
 
 #fullscreen {
-    width:100%;
-    height:100vh;
-    background-color: black;
-    gap: 4px;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #gameCanvas {
-    background: #111;
-    width:600px;
-    height:600px;
-    margin-left: auto;
-    margin-right: auto;
-    border: #000;
-
+    background: #0a0a12;
+    width: 600px;
+    height: 600px;
+    border: 4px solid #2a2a3a;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    image-rendering: pixelated;
 }
 
 #blurCanvas {
@@ -28,9 +42,92 @@ body {
     pointer-events: none;
 }
 
-#map {
-    position: absolute;
-    bottom:0;
+.ui-element {
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+    background: rgba(20, 20, 35, 0.8);
+    border: 2px solid #2a2a3a;
+    padding: 8px;
+    image-rendering: pixelated;
+}
+
+#stats-container {
+    position: fixed;
+    top: 50px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#dash, #money, #timer {
+    font-size: 16px;
+    min-width: 200px;
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+    background: rgba(20, 20, 35, 0.8);
+    border: 2px solid #2a2a3a;
+    padding: 8px;
+    image-rendering: pixelated;
+}
+
+#title {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 32px;
+    color: #ffd700;
+    text-shadow: 
+        3px 3px 0 #000,
+        -2px -2px 0 #600,
+        2px -2px 0 #600,
+        -2px 2px 0 #600,
+        2px 2px 0 #600;
+}
+
+#link {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    color: #aaa;
+    text-decoration: none;
+}
+
+#leaderboard {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    width:10%;
+    transform: translateY(-50%);
+    background: rgba(20, 20, 35, 0.8);
+    border: 4px solid #2a2a3a;
+    padding: 15px;
+    min-width: 250px;
+}
+
+#leaderboard h2 {
+    font-family: 'Press Start 2P', monospace;
+    color: #ffd700;
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.leaderboard-entry {
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    padding: 8px;
+    margin: 4px 0;
+    border-bottom: 2px solid #2a2a3a;
+    font-size: 14px;
 }
 
 .noselect {
@@ -38,87 +135,7 @@ body {
     -webkit-user-select: none;
 }
 
-#score {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-}
-
-#dash {
-    position: fixed;
-    top: 50px;
-    left: 20px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-}
-    
-#money {
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-}
-
-#timer {
-    position: fixed;
-    top: 110px;
-    left: 20px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-}
-
-#title {
-    position: fixed;
-    top: 0px;
-    left: 450px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 45px;
-}
-
-#link {
-    position: fixed;
-    bottom: 0px;
-    left: 430px;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 30px;
-}
-
-#game-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-}
-
-#leaderboard {
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
-    min-width: 200px;
-    margin-top: 50px;
-}
-
-#leaderboard h2 {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.leaderboard-entry {
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.leaderboard-entry:last-child {
-    border-bottom: none;
+#map {
+    position: absolute;
+    bottom:0;
 }
