@@ -37,7 +37,7 @@ export function createMinimap(rooms, currentPosition) {
                 box-shadow: inset 1px 1px 0 #6ac, inset -1px -1px 0 #268;
             }
             .room.null {
-                background: #000;
+                background: #111;
                 box-shadow: none;
             }
             .door {

@@ -34,7 +34,8 @@ export class Game {
     this.Rooms = Rooms.map(row => 
       row.map(room => {
           // reset room properties
-          room.enemies = room.beginEnemies
+          console.log("old enemies:", room.beginEnemies.length);
+          room.enemies = [...room.beginEnemies]
           room.travel.up.open = 0, room.travel.up.shotcount = 0;
           room.travel.down.open = 0, room.travel.down.shotcount = 0;
           room.travel.left.open = 0, room.travel.left.shotcount = 0;
@@ -391,6 +392,7 @@ export class Game {
 
     // Update enemies
     // console.log(this.getCurrentRoom().beginEnemies)
+
     this.getCurrentRoom().enemies.forEach((enemy, index) => {
       if (enemy.isActive) {
         console.log(enemy)

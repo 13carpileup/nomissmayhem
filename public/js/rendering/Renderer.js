@@ -91,6 +91,7 @@ export class Renderer {
 
     // Draw the pixelated player
     drawPixelPlayer(this.ctx, player.x, player.y, 42, color);
+    this.drawMotionBlur(player);
 
     // Draw direction arrow
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
