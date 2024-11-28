@@ -4,26 +4,8 @@ import { EnemyFactory } from './Enemy.js'
 import { preloadImage } from '../util/utils.js';
 
 
-const startRoom = {
-    background: "/rooms/room1.png",
-    travel: {
-        up: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-    ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
-
 const emptyRoom = {
-    background: "/rooms/room2.png",
+    background: "/rooms/dungeon/d11.png",
     travel: {
         up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -44,49 +26,31 @@ const emptyRoom = {
 
 };
 
-    const testRoom = {
-        background: "/rooms/room3.png",
-        travel: {
-            up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-            down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-            left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-            right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        },
-        beginEnemies: [
-            EnemyFactory.createEnemy('regular', 150, 100),
-        ],
-        projectiles: [],
-        coins: [],
-        keys: [],
-        type: "regular",
-        visited: 0,
-        imageRef: new Image(),
-    };
 
-    const shopRoom = {
-        background: "/rooms/storetutorial.jpg",
-        travel: {
-            up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-            down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-            left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-            right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        },
-        beginEnemies: [
-            
-        ],
-        projectiles: [],
-        coins: [],
-        type: "shop",
-        keys: [],
-        health:[],
-        powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
-        bought: [0, 0],
-        visited: 0,
-        imageRef: new Image(),
-    };
+const shopRoom = {
+    background: "/rooms/store/storetutorial.jpg",
+    travel: {
+        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
+        right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
+    },
+    beginEnemies: [
+        
+    ],
+    projectiles: [],
+    coins: [],
+    type: "shop",
+    keys: [],
+    health:[],
+    powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
+    bought: [0, 0],
+    visited: 0,
+    imageRef: new Image(),
+};
 
 const nullTile = {
-    background: "/rooms/store.png",
+    background: "/rooms/store/store.png",
     travel: {
         up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
@@ -105,7 +69,7 @@ const nullTile = {
 };
 
 const tutorialRoom = {
-    background: "/rooms/tutorial1.jpg",
+    background: "/rooms/tutorial/t1.png",
     travel: {
         up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
@@ -125,7 +89,7 @@ const tutorialRoom = {
 };
 
 const tutorialRoom2 = {
-    background: "/rooms/tutorial2.jpg",
+    background: "/rooms/tutorial/t2.png",
     travel: {
         up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -146,7 +110,7 @@ const tutorialRoom2 = {
 };
 
 const tutorialRoom3 = {
-    background: "/rooms/tutorial3.png",
+    background: "/rooms/tutorial/t3.png",
     travel: {
         up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
         down: { type: "key", open: 0, openreq: 0, shotcount: 0 },
@@ -168,7 +132,7 @@ const tutorialRoom3 = {
 };
 
 const defaultRoom04 = {
-    background: "/rooms/room2.png",
+    background: "/rooms/dungeon/d15.png",
     travel: {
         up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -191,7 +155,7 @@ const defaultRoom04 = {
 };
 
 const defaultRoom14 = {
-    background: "/rooms/room3.png",
+    background: "/rooms/dungeon/d11.png",
     travel: {
         up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
@@ -213,7 +177,7 @@ const defaultRoom14 = {
 };
 
 const defaultRoom05 = {
-    background: "/rooms/room2.png",
+    background: "/rooms/dungeon/d21.png",
     travel: {
         up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -235,7 +199,7 @@ const defaultRoom05 = {
 };
 
 const storeRoom15 = {
-    background: "/rooms/store.png",
+    background: "/rooms/store/store.png",
     travel: {
         up: { type: "wall", open: 0, openreq: 4, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -257,7 +221,7 @@ const storeRoom15 = {
 };
 
 const defaultRoom06 = {
-    background: "/rooms/room2.png",
+    background: "/rooms/dungeon/d14.png",
     travel: {
         up: { type: "door", open: 0, openreq: 8, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -278,7 +242,7 @@ const defaultRoom06 = {
 };
 
 const defaultRoom07 = {
-    background: "/rooms/room2.png",
+    background: "/rooms/dungeon/d21.png",
     travel: {
         up: { type: "wall", open: 0, openreq: 8, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
@@ -301,7 +265,7 @@ const defaultRoom07 = {
 };
 
 const keyRoom = {
-    background: "/rooms/room3.png",
+    background: "/rooms/dungeon/d10.png",
     travel: {
         up: { type: "wall", open: 1,         openreq: 8, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
@@ -325,7 +289,7 @@ const keyRoom = {
 
 
 const winningRoom = {
-    background: "/rooms/room1.png",
+    background: "/rooms/dungeon/d20.png",
     travel: {
         up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         down: { type: "wall", open: 0, openreq: 0, shotcount: 0 },
