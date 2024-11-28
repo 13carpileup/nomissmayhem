@@ -28,7 +28,7 @@ const emptyRoom = {
 
 
 const shopRoom = {
-    background: "/rooms/store/storetutorial.jpg",
+    background: "/rooms/store/storetutorial.png",
     travel: {
         up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
