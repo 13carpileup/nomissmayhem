@@ -105,7 +105,7 @@ const nullTile = {
 };
 
 const tutorialRoom = {
-    background: "/rooms/test3.png",
+    background: "/rooms/tutorial1.jpg",
     travel: {
         up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
         down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
@@ -125,7 +125,7 @@ const tutorialRoom = {
 };
 
 const tutorialRoom2 = {
-    background: "/rooms/test2.png",
+    background: "/rooms/tutorial2.jpg",
     travel: {
         up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
         down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
