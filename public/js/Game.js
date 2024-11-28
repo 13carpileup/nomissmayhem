@@ -19,6 +19,10 @@ export class Game {
 
   init() {
     console.log("Initializing...")
+    const gameOver = document.getElementById("gameOver");
+    if (gameOver) {
+      gameOver.remove();
+    }
 
     this.canvas = document.getElementById('gameCanvas');
     this.blurCanvas = document.getElementById('blurCanvas');

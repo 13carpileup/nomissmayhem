@@ -34,48 +34,48 @@ export class Renderer {
     
   }
 
-  applyCRTEffect() {
-    // Simple wave effect using pre-created temp canvas
-    const time = Date.now() / 1000;
-    const waveAmount = Math.sin(time) * 1.5;
-    
-    this.crtCtx.drawImage(this.canvas, 
-        0, 0, this.canvas.width, this.canvas.height,
-        waveAmount, 0, this.canvas.width, this.canvas.height
-    );
-    
-    this.ctx.drawImage(this.crtCanvas, 0, 0);
+    applyCRTEffect() {
+      // Simple wave effect using pre-created temp canvas
+      const time = Date.now() / 1000;
+      const waveAmount = Math.sin(time) * 1.5;
+      
+      this.crtCtx.drawImage(this.canvas, 
+          0, 0, this.canvas.width, this.canvas.height,
+          waveAmount, 0, this.canvas.width, this.canvas.height
+      );
+      
+      this.ctx.drawImage(this.crtCanvas, 0, 0);
 
-    // Scanlines - only every 4th line
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.17)';
-    for(let i = 0; i < this.canvas.height; i += 4) {
-        this.ctx.fillRect(0, i, this.canvas.width, 1);
-    }
+      // Scanlines - only every 4th line
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.17)';
+      for(let i = 0; i < this.canvas.height; i += 4) {
+          this.ctx.fillRect(0, i, this.canvas.width, 1);
+      }
 
-    // Subtle color shift
-    this.ctx.globalCompositeOperation = 'screen';
-    this.ctx.fillStyle = 'rgba(255, 0, 0, 0.02)';
-    this.ctx.fillRect(1, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = 'rgba(0, 255, 0, 0.02)';
-    this.ctx.fillRect(-1, 0, this.canvas.width, this.canvas.height);
-    this.ctx.globalCompositeOperation = 'source-over';
+      // Subtle color shift
+      this.ctx.globalCompositeOperation = 'screen';
+      this.ctx.fillStyle = 'rgba(255, 0, 0, 0.02)';
+      this.ctx.fillRect(1, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillStyle = 'rgba(0, 255, 0, 0.02)';
+      this.ctx.fillRect(-1, 0, this.canvas.width, this.canvas.height);
+      this.ctx.globalCompositeOperation = 'source-over';
 
-    // Pre-created vignette
-    this.ctx.fillStyle = this.vignetteGradient;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      // Pre-created vignette
+      this.ctx.fillStyle = this.vignetteGradient;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Minimal noise
-    if(Math.random() < 0.02) {
-        this.ctx.fillStyle = 'rgba(255,255,255,0.015)';
-        for(let i = 0; i < 8; i++) {
-            this.ctx.fillRect(
-                Math.random() * this.canvas.width,
-                Math.random() * this.canvas.height,
-                2, 2
-            );
-        }
-    }
-}
+      // Minimal noise
+      if(Math.random() < 0.02) {
+          this.ctx.fillStyle = 'rgba(255,255,255,0.015)';
+          for(let i = 0; i < 8; i++) {
+              this.ctx.fillRect(
+                  Math.random() * this.canvas.width,
+                  Math.random() * this.canvas.height,
+                  2, 2
+              );
+          }
+      }
+  }
 
   drawMotionBlur(player) {
     this.blurCtx.clearRect(0, 0, this.blurCanvas.width, this.blurCanvas.height);
