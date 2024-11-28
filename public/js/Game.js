@@ -349,6 +349,7 @@ export class Game {
     window.addEventListener('resize', () => this.resizeCanvas());
 
     window.addEventListener('keydown', (e) => {
+      if (!this.isGameStarted) return;
       if (e.key.toLowerCase() in this.keys) {
         this.keys[e.key.toLowerCase()] = true;
         //console.log(e);
@@ -356,12 +357,14 @@ export class Game {
     });
 
     window.addEventListener('keyup', (e) => {
+      if (!this.isGameStarted) return;
       if (e.key.toLowerCase() in this.keys) {
         this.keys[e.key.toLowerCase()] = false;
       }
     });
 
     window.addEventListener('mousemove', (e) => {
+      if (!this.isGameStarted) return;
       const rect = this.canvas.getBoundingClientRect();
       this.mouseX = e.clientX - rect.left;
       this.mouseY = e.clientY - rect.top;
@@ -369,19 +372,23 @@ export class Game {
     });
 
     window.addEventListener('mousedown', () => {
+      if (!this.isGameStarted) return;
       this.isMouseDown = true;
     });
   
     window.addEventListener('mouseup', () => {
+      if (!this.isGameStarted) return;
       this.isMouseDown = false;
     });
   
     window.addEventListener('mouseleave', () => {
+      if (!this.isGameStarted) return;
       this.isMouseDown = false;
     });
   
 
     window.addEventListener('click', (e) => {
+      if (!this.isGameStarted) return;
       const currentTime = Date.now();
       //console.log(currentTime);
       if ((currentTime - this.lastBulletTime) >= this.player.shootCooldown) {
