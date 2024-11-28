@@ -47,7 +47,7 @@ export class Renderer {
     this.ctx.drawImage(this.crtCanvas, 0, 0);
 
     // Scanlines - only every 4th line
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.17)';
     for(let i = 0; i < this.canvas.height; i += 4) {
         this.ctx.fillRect(0, i, this.canvas.width, 1);
     }
@@ -186,7 +186,7 @@ export class Renderer {
         
         const bounceColor = 255 - (proj.bounces * 60);
         let fullColour = `rgb(255, ${bounceColor}, ${bounceColor})`;
-        drawPixelPlayer(this.ctx, proj.x, proj.y, proj.radius*2, fullColour);
+        drawPixelPlayer(this.ctx, proj.x, proj.y, proj.radius*2 , fullColour);
         this.ctx.fill();
       });
     }

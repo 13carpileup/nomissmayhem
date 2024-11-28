@@ -42,44 +42,44 @@ const emptyRoom = {
 
 };
 
-const testRoom = {
-    background: "/rooms/room3.png",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-        EnemyFactory.createEnemy('regular', 150, 100),
-    ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    type: "regular",
-    visited: 0
-};
+    const testRoom = {
+        background: "/rooms/room3.png",
+        travel: {
+            up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+            down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+            left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
+            right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+        },
+        beginEnemies: [
+            EnemyFactory.createEnemy('regular', 150, 100),
+        ],
+        projectiles: [],
+        coins: [],
+        keys: [],
+        type: "regular",
+        visited: 0
+    };
 
-const shopRoom = {
-    background: "/rooms/storetutorial.jpg",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-        
-    ],
-    projectiles: [],
-    coins: [],
-    type: "shop",
-    keys: [],
-    health:[],
-    powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
-    bought: [0, 0],
-    visited: 0
-};
+    const shopRoom = {
+        background: "/rooms/storetutorial.jpg",
+        travel: {
+            up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+            down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
+            left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
+            right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
+        },
+        beginEnemies: [
+            
+        ],
+        projectiles: [],
+        coins: [],
+        type: "shop",
+        keys: [],
+        health:[],
+        powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
+        bought: [0, 0],
+        visited: 0
+    };
 
 const nullTile = {
     background: "/rooms/store.png",
