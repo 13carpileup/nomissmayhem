@@ -20,8 +20,9 @@ export class Game {
   init() {
     console.log("Initializing...")
     const gameOver = document.getElementById("gameOver");
+    console.log("TRYING TO REMOVE: " + gameOver);
     if (gameOver) {
-      gameOver.remove();
+      gameOver.remove();  
     }
 
     this.canvas = document.getElementById('gameCanvas');

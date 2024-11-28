@@ -96,9 +96,9 @@ const tutorialRoom2 = {
         left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
         right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
     },
-    enemies: [EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true)],
+    enemies: [],
     beginEnemies: [
-        EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true)
+        EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true, 20)
     ],
     projectiles: [],
     coins: [],
@@ -274,7 +274,7 @@ const keyRoom = {
     },
     beginEnemies: [
         EnemyFactory.createEnemy('attacker', 150, 100), 
-        EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true, 50, 500),
+        EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true, 50, 80),
         EnemyFactory.createEnemy('attacker', 250, 500),
         EnemyFactory.createEnemy('attacker', 300, 200)
     ],

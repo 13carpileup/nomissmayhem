@@ -4,16 +4,17 @@ import { Projectile } from './Projectile.js';
 
 // Base Enemy class
 export class Enemy {
-    constructor(x, y, id, key=false, healing=false, radius =20) {
+    constructor(x, y, id, key=false, healing=false, radius=20) {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        console.log("radius:-----",radius)
         this.speed = 1.7;
         this.health = 100;
         this.type = 'regular';
         this.isActive = true;
         this.color = '#ff0000';
-        this.minDistanceFromPlayer = this.radius * 2; // Minimum distance to maintain from player
+        this.minDistanceFromPlayer = this.radius * 1.5; // Minimum distance to maintain from player
         this.coinDrop = {
             type: 'bronze',
             value: 1
@@ -183,17 +184,17 @@ export class EnemyFactory {
         console.log(healing);
         switch(type.toLowerCase()) {
             case 'regular':
-                return new Enemy(x, y, id, key, healing);
+                return new Enemy(x, y, id, key, healing, radius);
             case 'shielded':
-                return new ShieldedEnemy(x, y, id, key, healing);
+                return new ShieldedEnemy(x, y, id, key, healing, radius);
             case 'reflector':
-                return new ReflectorEnemy(x, y, id, key, healing);
+                return new ReflectorEnemy(x, y, id, key, healing, radius);
             case 'attacker':
-                return new AttackerEnemy(x, y, id, key, healing);
+                return new AttackerEnemy(x, y, id, key, healing, radius);
             case 'laser':
-                return new LaserEnemy(x, y, id, key, healing);
+                return new LaserEnemy(x, y, id, key, healing, radius);
             default:
-                return new Enemy(x, y, id, key, healing );
+                return new Enemy(x, y, id, key, healing, radius);
         }
     }
 }

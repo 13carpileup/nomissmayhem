@@ -131,7 +131,7 @@ export class Renderer {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.bgImg = room.imageRef;
-    console.log(room.imageRef);
+    //console.log(room.imageRef);
 
     // Draw background first if loaded
     this.ctx.drawImage(this.bgImg, 0, 0, this.canvas.width, this.canvas.height);
@@ -167,7 +167,7 @@ export class Renderer {
       enemies.forEach(enemy => {
         if (enemy.isActive) {
 
-          drawPixelPlayer(this.ctx, enemy.x, enemy.y, 42, enemy.color);
+          drawPixelPlayer(this.ctx, enemy.x, enemy.y, (enemy.radius / 20) * 42, enemy.color);
 
 
           // Draw health bar
