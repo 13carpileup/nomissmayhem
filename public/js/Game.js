@@ -84,9 +84,7 @@ export class Game {
       shift: false,
     };
 
-    this.timerElement = document.getElementById('timer');
-    this.startTime = Date.now();
-    this.elapsedTime = 0;
+
     this.isGameRunning = true;
 
     this.fixedTimeStep = 1000/60; // 60 fps physics update rate
@@ -101,6 +99,9 @@ export class Game {
 
   startGame() {
     this.isGameStarted = true;
+    this.timerElement = document.getElementById('timer');
+    this.startTime = Date.now();
+    this.elapsedTime = 0;
     this.startScreen.remove();
     this.setup();
   }
