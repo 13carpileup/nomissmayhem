@@ -1,5 +1,8 @@
 use axum::{
-    extract::{Path, State}, http::Method, routing::{delete, get, post}, Json, Router
+    extract::{Path, State}, 
+    http::{Method, StatusCode}, 
+    routing::{delete, get, post}, 
+    Json, Router, response::IntoResponse
 };
 use tower_http::cors::{CorsLayer, Any};
 use serde::{Deserialize, Serialize};
@@ -22,6 +25,12 @@ struct LeaderboardEntry {
     time: i32,
 }
 
+#[derive(Clone)]
+struct AppState {
+    heap: Arc<Mutex<BinaryHeap<Reverse<Entry>>>>,
+    persist: PersistInstance,
+}
+
 impl Ord for Entry {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.time.cmp(&other.time)
@@ -42,20 +51,42 @@ impl PartialEq for Entry {
 
 impl Eq for Entry {}
 
-#[derive(Clone)]
-struct AppState {
-    heap: Arc<Mutex<BinaryHeap<Reverse<Entry>>>>,
-    persist: PersistInstance,
-}
-
 async fn add_score(
     State(state): State<AppState>,
     Json(entry): Json<Entry>,
-) -> Json<&'static str> {
+) -> impl IntoResponse {
+    // Validate name length (between 1 and 20 characters)
+    if entry.name.is_empty() || entry.name.len() > 20 {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json("Name must be between 1 and 20 characters")
+        ).into_response();
+    }
+
+    // Validate time (positive and reasonable)
+    if entry.time <= 0 || entry.time > 3600*1000 {  // Max 1 hour in seconds
+        return (
+            StatusCode::BAD_REQUEST,
+            Json("Time must be between 1 and 3600 seconds")
+        ).into_response();
+    }
+
     let mut leaderboard = state.heap.lock().await;
+    
+    // Limit total entries to 100
+    if leaderboard.len() >= 100 {
+        let max_time = leaderboard.peek().map(|Reverse(entry)| entry.time).unwrap_or(i32::MAX);
+        if entry.time >= max_time {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json("Leaderboard full and this score doesn't qualify")
+            ).into_response();
+        }
+        leaderboard.pop();  // Remove the worst score
+    }
+
     leaderboard.push(Reverse(entry));
     
-    // Save the updated leaderboard
     let entries: Vec<Entry> = leaderboard
         .iter()
         .map(|Reverse(entry)| Entry {
@@ -67,7 +98,7 @@ async fn add_score(
     state.persist.save("leaderboard", entries)
         .expect("Failed to save leaderboard");
         
-    Json("Score added successfully")
+    (StatusCode::CREATED, Json("Score added successfully")).into_response()
 }
 
 async fn get_leaderboard(
@@ -84,30 +115,45 @@ async fn get_leaderboard(
         })
         .collect();
 
-    // Sort by time ascending
     entries.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(std::cmp::Ordering::Equal));
     
-    // Update positions after sorting
     for (i, entry) in entries.iter_mut().enumerate() {
         entry.position = i + 1;
     }
 
     Json(entries)
-} 
+}
+
+async fn delete_all(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let mut leaderboard = state.heap.lock().await;
+    leaderboard.clear();
+    
+    // Save empty leaderboard
+    state.persist.save("leaderboard", Vec::<Entry>::new())
+        .expect("Failed to save leaderboard");
+    
+    (StatusCode::OK, Json("All entries deleted successfully")).into_response()
+}
 
 async fn delete_entry(
     State(state): State<AppState>,
     Path(name): Path<String>,
-) -> Json<&'static str> {
+) -> impl IntoResponse {
+    if name.is_empty() || name.len() > 20 {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json("Invalid name length")
+        ).into_response();
+    }
+
     let mut leaderboard = state.heap.lock().await;
     let initial_len = leaderboard.len();
     
-    // Remove the entry with the given name
     leaderboard.retain(|Reverse(entry)| entry.name != name);
     
     if leaderboard.len() < initial_len {
-        // Entry was found and removed
-        // Save the updated leaderboard
         let entries: Vec<Entry> = leaderboard
             .iter()
             .map(|Reverse(entry)| Entry {
@@ -119,19 +165,16 @@ async fn delete_entry(
         state.persist.save("leaderboard", entries)
             .expect("Failed to save leaderboard");
         
-        Json("Entry deleted successfully")
+        (StatusCode::OK, Json("Entry deleted successfully")).into_response()
     } else {
-        // Entry was not found
-        Json("Entry not found")
+        (StatusCode::NOT_FOUND, Json("Entry not found")).into_response()
     }
 }
-
 
 #[shuttle_runtime::main]
 async fn axum(
     #[shuttle_persist::Persist] persist: PersistInstance,
 ) -> shuttle_axum::ShuttleAxum {
-    // Initialize heap with persisted data
     let mut heap = BinaryHeap::new();
     if let Ok(entries) = persist.load::<Vec<Entry>>("leaderboard") {
         for entry in entries {
@@ -144,7 +187,6 @@ async fn axum(
         persist,
     };
 
-    // Configure CORS
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods([Method::GET, Method::POST, Method::DELETE])
@@ -153,7 +195,8 @@ async fn axum(
     let router = Router::new()
         .route("/score", post(add_score))
         .route("/leaderboard", get(get_leaderboard))
-        .route("/entry/:name", delete(delete_entry))  // Add the new delete route
+        .route("/entry/:name", delete(delete_entry))
+        .route("/clear", delete(delete_all))
         .with_state(shared_state)
         .layer(cors);
 
