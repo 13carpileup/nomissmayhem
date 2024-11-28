@@ -6,6 +6,7 @@
 body {
     margin: 0;
     overflow: hidden;
+    opacity: 0;
     background: #0f0f1b;
     background-image: 
         linear-gradient(rgba(15, 15, 27, 0.9), rgba(15, 15, 27, 0.9)),
@@ -60,6 +61,7 @@ body {
     flex-direction: column;
     gap: 10px;
 }
+
 
 #dash, #money, #timer {
     font-size: 16px;

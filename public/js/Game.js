@@ -24,6 +24,7 @@ export class Game {
     this.blurCanvas = document.getElementById('blurCanvas');
     this.moneyElement = document.getElementById('money')
     this.dashElement = document.getElementById('dash');
+    this.ui = document.getElementById('noselect');
     this.lastBulletTime = Date.now();
     this.music = new Music();
     this.lastUpdate = Date.now();
@@ -63,8 +64,8 @@ export class Game {
           visited: 0
       }))
     );
-  this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
-  console.log("TEST ROOM: ", this.Rooms[5][2])
+    this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
+    console.log("TEST ROOM: ", this.Rooms[5][2])
   
     
   
@@ -93,9 +94,9 @@ export class Game {
     this.accumulator = 0;
     this.isGameStarted = false;
     
-
+    this.ui.style.opacity = 1;
     preloadRooms(Rooms);
-    this. createStartScreen(); 
+    this.createStartScreen(); 
   }
 
   startGame() {
