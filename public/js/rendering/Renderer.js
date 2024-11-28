@@ -130,8 +130,8 @@ export class Renderer {
     let projectiles = room.projectiles;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.bgImg = new Image();
-    this.bgImg.src = '/assets' + room.background;
+    this.bgImg = room.imageRef;
+    console.log(room.imageRef);
 
     // Draw background first if loaded
     this.ctx.drawImage(this.bgImg, 0, 0, this.canvas.width, this.canvas.height);

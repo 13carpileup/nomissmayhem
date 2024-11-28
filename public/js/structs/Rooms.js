@@ -18,7 +18,8 @@ const startRoom = {
     coins: [],
     keys: [],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const emptyRoom = {
@@ -39,6 +40,7 @@ const emptyRoom = {
     health:[],
     type: "regular",
     visited: 0,
+    imageRef: new Image(),
 
 };
 
@@ -57,7 +59,8 @@ const emptyRoom = {
         coins: [],
         keys: [],
         type: "regular",
-        visited: 0
+        visited: 0,
+        imageRef: new Image(),
     };
 
     const shopRoom = {
@@ -78,7 +81,8 @@ const emptyRoom = {
         health:[],
         powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
         bought: [0, 0],
-        visited: 0
+        visited: 0,
+        imageRef: new Image(),
     };
 
 const nullTile = {
@@ -97,6 +101,7 @@ const nullTile = {
     keys: [],
     health:[],
     type: "nullTile",
+    imageRef: new Image(),
 };
 
 const tutorialRoom = {
@@ -115,7 +120,8 @@ const tutorialRoom = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 1
+    visited: 1,
+    imageRef: new Image(),
 };
 
 const tutorialRoom2 = {
@@ -135,7 +141,8 @@ const tutorialRoom2 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const tutorialRoom3 = {
@@ -156,7 +163,8 @@ const tutorialRoom3 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const defaultRoom04 = {
@@ -178,7 +186,8 @@ const defaultRoom04 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const defaultRoom14 = {
@@ -199,7 +208,8 @@ const defaultRoom14 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const defaultRoom05 = {
@@ -220,7 +230,8 @@ const defaultRoom05 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const storeRoom15 = {
@@ -241,7 +252,8 @@ const storeRoom15 = {
     powerUps: [['super', 8, 'Super Shot', 'Removes all shooting cooldown!'], ['extrahealth', 5, 'Extra Health', 'Increases your maximum health!']],
     bought: [0,0],
     health:[],
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const defaultRoom06 = {
@@ -261,7 +273,8 @@ const defaultRoom06 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const defaultRoom07 = {
@@ -283,7 +296,8 @@ const defaultRoom07 = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 const keyRoom = {
@@ -305,7 +319,8 @@ const keyRoom = {
     keys: [],
     health:[],
     type: "regular",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 
@@ -325,7 +340,8 @@ const winningRoom = {
     keys: [],
     health:[],
     type: "win",
-    visited: 0
+    visited: 0,
+    imageRef: new Image(),
 };
 
 
@@ -347,11 +363,15 @@ export function preloadRooms(rms) {
 
     rms.forEach((row)=> {
         row.forEach((room) => {
-            urls.add("assets"+room.background);
+            
+            const link = "assets"+room.background;
+            room.imageRef.src=link;
+            console.log(link)
+            
         })
     });
 
-    preloadImage(urls);
+    // preloadImage(urls);
 }
 
 
