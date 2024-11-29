@@ -8,7 +8,7 @@ export class Enemy {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        console.log("radius:-----",radius)
+        //console.log("radius:-----",radius)
         this.speed = 1.7;
         this.health = 100;
         this.type = 'regular';
@@ -181,7 +181,7 @@ export class LaserEnemy extends Enemy {
 // Enemy Factory
 export class EnemyFactory {
     static createEnemy(type, x, y, id, key=false, healing=false, radius = 20, health=100) {
-        console.log(healing);
+        //console.log(healing);
         switch(type.toLowerCase()) {
             case 'regular':
                 return new Enemy(x, y, id, key, healing, radius);

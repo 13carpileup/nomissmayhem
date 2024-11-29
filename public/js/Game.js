@@ -2,7 +2,8 @@ import { Player } from './player/Player.js';
 import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
 import { checkCollision, Clone } from './util/utils.js';
-import { Rooms, startIndex, checkDoorCollision, preloadRooms } from './structs/Rooms.js';
+import { checkDoorCollision, preloadRooms } from './structs/Rooms.js';
+import { Rooms, startIndex } from './gameDesign/testLevel.js'
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
 import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
@@ -70,12 +71,12 @@ export class Game {
       }))
     );
     this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
-    console.log("TEST ROOM: ", this.Rooms[5][2])
+    //console.log("TEST ROOM: ", this.Rooms[5][2])
   
     
   
 
-    console.log("reinit log: ", this.roomPosition, startIndex);
+    //console.log("reinit log: ", this.roomPosition, startIndex);
 
     this.hitCount = 0;
     this.isMouseDown = false;
@@ -561,10 +562,10 @@ export class Game {
 
     this.getCurrentRoom().enemies.forEach((enemy, index) => {
       if (enemy.isActive) {
-        console.log(enemy)
-        console.log(enemy.x)
+        // console.log(enemy)
+        // console.log(enemy.x)
         const enemyProjectile = enemy.update(this.player, Date.now());
-        console.log(enemyProjectile)
+        // console.log(enemyProjectile)
 
         // If enemy fired a projectile, add it to projectiles array
         if (enemyProjectile) {
