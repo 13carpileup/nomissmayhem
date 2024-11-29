@@ -170,7 +170,7 @@ export class Game {
     `;
 
     const subtitle = document.createElement('div');
-    subtitle.textContent = 'YOU ARE YOUR OWN ENEMY!';
+    subtitle.textContent = 'YOU ARE YOUR OWN ENEMY';
     subtitle.style.cssText = `
         color: #aaa;
         font-family: 'Press Start 2P', monospace;
@@ -437,7 +437,7 @@ export class Game {
     //console.log(this.player.keys)
 
     if ((door.type=='key') && this.player.keys.includes("key1")) {
-      this.player.keys.pop();
+      this.player.keys.pop( );
       return true;
     }
 
