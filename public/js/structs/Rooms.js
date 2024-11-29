@@ -4,310 +4,176 @@ import { EnemyFactory } from './Enemy.js'
 import { preloadImage } from '../util/utils.js';
 
 
-const emptyRoom = {
-    background: "/rooms/dungeon/d11.png",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 0, openreq: 6, shotcount: 0 },
-        right: { type: "wall", open: 0, openreq: 10, shotcount: 0 },
-    },
-    beginEnemies: [  
+export class Room {
+    constructor(background, travel, beginEnemies, type, powerUps = []) {
+        this.background = background;
+        this.travel = travel;
+        this.beginEnemies = beginEnemies;
+        this.projectiles = [];
+        this.coins = [];
+        this.keys = [];
+        this.health = [];
+        this.type = type;
+        this.visited = 0;
+        this.imageRef = new Image();
+        this.powerUps = powerUps;
+        this.bought = [0, 0];
+    }
+}
+
+function createTravel(up, down, left, right) {
+    let travel = {
+        up: {type: up[0], open: (up[1] == 0 && up[0] != 'key' ? 1 : 0), openreq: up[1], shoutcount: 0},
+        down: {type: down[0], open: (down[1] == 0 && down[0] != 'key' ? 1 : 0), openreq: down[1], shoutcount: 0},
+        left: {type: left[0], open: (left[1] == 0 && left[0] != 'key' ? 1 : 0), openreq: left[1], shoutcount: 0},
+        right: {type: right[0], open: (right[1] == 0 && right[0] != 'key' ? 1 : 0), openreq: right[1], shoutcount: 0},
+    }
+
+    return travel;
+}
+
+
+const emptyRoom = new Room(
+    "/rooms/dungeon/d11.png", 
+    createTravel(['wall', 0], ['door', 0], ['door', 5], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('attacker', 150, 100, 'keyer', true),
         EnemyFactory.createEnemy('attacker', 250, 200, 'keyless'),
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
+    "regular"
+);
 
-};
-
-
-const shopRoom = {
-    background: "/rooms/store/storetutorial.png",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-        
+const shopRoom = new Room(
+    "/rooms/store/storetutorial.png", 
+    createTravel(['wall', 0], ['wall', 0], ['door', 0], ['door', 0]), 
+    [  
     ],
-    projectiles: [],
-    coins: [],
-    type: "shop",
-    keys: [],
-    health:[],
-    powerUps: [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']],
-    bought: [0, 0],
-    visited: 0,
-    imageRef: new Image(),
-};
+    "shop",
+    [['extraballs', 2, 'Extra Balls', 'Increases the speed at which you can fire!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']]
+);
 
-const nullTile = {
-    background: "/rooms/store/store.png",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-        
+const nullTile = new Room(
+    "/rooms/store/storetutorial.png", 
+    createTravel(['wall', 0], ['wall', 0], ['wall', 0], ['wall', 0]), 
+    [  
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "nullTile",
-    imageRef: new Image(),
-};
+    "nullTile",
+);
 
-const tutorialRoom = {
-    background: "/rooms/tutorial/t1.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
-        
+const tutorialRoom = new Room(
+    "/rooms/tutorial/t1.png", 
+    createTravel(['door', 3], ['wall', 0], ['wall', 0], ['wall', 0]), 
+    [  
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 1,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const tutorialRoom2 = {
-    background: "/rooms/tutorial/t2.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 3, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    enemies: [],
-    beginEnemies: [
+const tutorialRoom2 = new Room(
+    "/rooms/tutorial/t2.png", 
+    createTravel(['door', 3], ['door', 0], ['wall', 0], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('regular', 150, 100, 'bruh', false, true, 20)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const tutorialRoom3 = {
-    background: "/rooms/tutorial/t3.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
-        down: { type: "key", open: 0, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
+const tutorialRoom3 = new Room(
+    "/rooms/tutorial/t3.png", 
+    createTravel(['door', 4], ['key', 0], ['wall', 0], ['door', 0]), 
+    [  
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100),
         EnemyFactory.createEnemy('attacker', 400, 100)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const defaultRoom04 = {
-    background: "/rooms/dungeon/d15.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "door", open: 0, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const defaultRoom04 = new Room(
+    "/rooms/dungeon/d15.png", 
+    createTravel(['door', 4], ['door', 0], ['wall', 0], ['door', 7]), 
+    [  
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100),
         EnemyFactory.createEnemy('regular', 250, 500),
         EnemyFactory.createEnemy('regular', 300, 200)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const defaultRoom14 = {
-    background: "/rooms/dungeon/d11.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const defaultRoom14 = new Room(
+    "/rooms/dungeon/d11.png", 
+    createTravel(['door', 4], ['wall', 0], ['door', 0], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('attacker', 150, 100),
         EnemyFactory.createEnemy('attacker', 200, 400,'', false, true),
         EnemyFactory.createEnemy('regular', 300, 100),
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const defaultRoom05 = {
-    background: "/rooms/dungeon/d21.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 4, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const defaultRoom05 = new Room(
+    "/rooms/dungeon/d21.png", 
+    createTravel(['door', 4], ['door', 0], ['wall', 0], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('regular', 400, 200),
         EnemyFactory.createEnemy('attacker', 250, 500),
         EnemyFactory.createEnemy('regular', 200, 200)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const storeRoom15 = {
-    background: "/rooms/store/store.png",
-    travel: {
-        up: { type: "wall", open: 0, openreq: 4, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
+const storeRoom15 = new Room(
+    "/rooms/store/store.png", 
+    createTravel(['wall', 0], ['door', 0], ['wall', 0], ['wall', 0]), 
+    [  
 
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    type: "shop",
-    powerUps: [['super', 8, 'Super Shot', 'Removes all shooting cooldown!'], ['extrahealth', 5, 'Extra Health', 'Increases your maximum health!']],
-    bought: [0,0],
-    health:[],
-    visited: 0,
-    imageRef: new Image(),
-};
+    "shop",
+    [['super', 8, 'Super Shot', 'Removes all shooting cooldown!'], ['extrahealth', 5, 'Extra Health', 'Increases your maximum health!']]
+);
 
-const defaultRoom06 = {
-    background: "/rooms/dungeon/d14.png",
-    travel: {
-        up: { type: "door", open: 0, openreq: 8, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const defaultRoom06 = new Room(
+    "/rooms/dungeon/d14.png", 
+    createTravel(['door', 7], ['door', 0], ['wall', 0], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 300, 200)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const defaultRoom07 = {
-    background: "/rooms/dungeon/d21.png",
-    travel: {
-        up: { type: "wall", open: 0, openreq: 8, shotcount: 0 },
-        down: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "door", open: 0, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const defaultRoom07 = new Room(
+    "/rooms/dungeon/d21.png", 
+    createTravel(['wall', 0], ['door', 0], ['wall', 0], ['door', 7]), 
+    [  
         EnemyFactory.createEnemy('regular', 150, 100),
         EnemyFactory.createEnemy('regular', 400, 100, '', false, true),
         EnemyFactory.createEnemy('regular', 250, 500),
         EnemyFactory.createEnemy('regular', 300, 200)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-const keyRoom = {
-    background: "/rooms/dungeon/d10.png",
-    travel: {
-        up: { type: "wall", open: 1,         openreq: 8, shotcount: 0 },
-        down: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        left: { type: "door", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 0, openreq: 7, shotcount: 0 },
-    },
-    beginEnemies: [
+const keyRoom = new Room(
+    "/rooms/dungeon/d10.png", 
+    createTravel(['wall', 0], ['wall', 0], ['door', 0], ['wall', 0]), 
+    [  
         EnemyFactory.createEnemy('attacker', 150, 100), 
         EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true, 50, 80),
         EnemyFactory.createEnemy('attacker', 250, 500),
         EnemyFactory.createEnemy('attacker', 300, 200)
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "regular",
-    visited: 0,
-    imageRef: new Image(),
-};
+    "regular",
+);
 
-
-const winningRoom = {
-    background: "/rooms/dungeon/d20.png",
-    travel: {
-        up: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        down: { type: "wall", open: 0, openreq: 0, shotcount: 0 },
-        left: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-        right: { type: "wall", open: 1, openreq: 0, shotcount: 0 },
-    },
-    beginEnemies: [
+const winningRoom = new Room(
+    "/rooms/dungeon/d10.png", 
+    createTravel(['wall', 0], ['wall', 0], ['wall', 0], ['wall', 0]), 
+    [  
 
     ],
-    projectiles: [],
-    coins: [],
-    keys: [],
-    health:[],
-    type: "win",
-    visited: 0,
-    imageRef: new Image(),
-};
-
+    "win",
+);
 
 export const startIndex = [6, 2];
 
@@ -323,8 +189,6 @@ export const Rooms = [
 
 // preloading room imgs
 export function preloadRooms(rms) {
-    let urls = new Set();
-
     rms.forEach((row)=> {
         row.forEach((room) => {
             
