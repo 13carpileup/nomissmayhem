@@ -437,6 +437,7 @@ export class Game {
     //console.log(this.player.keys)
 
     if ((door.type=='key') && this.player.keys.includes("key1")) {
+      this.player.keys.pop();
       return true;
     }
 
