@@ -42,7 +42,10 @@ export function createMinimap(rooms, currentPosition) {
             }
             .door {
                 position: absolute;
-                background: #ca4;
+                background: #c75322;
+            }
+            .key {
+                background: #ffd700;
             }
             .notVisited {
                 background: #111;
@@ -67,8 +70,8 @@ export function createMinimap(rooms, currentPosition) {
                     const roomClass = `room ${isCurrentRoom ? 'current' : ''} ${room.type === 'shop' ? 'shop' : ''} ${room.visited ? 'visited' : 'notVisited'}`;
                     
                     const doors = ['up', 'down', 'left', 'right']
-                        .filter(direction => room.travel[direction].type === 'door')
-                        .map(direction => `<div class="door ${direction} ${room.visited ? 'visitedDoor' : 'notVisitedDoor'}"></div>`)
+                        .filter(direction => room.travel[direction].type === 'door' || room.travel[direction].type === "key")
+                        .map(direction => `<div class="door ${room.travel[direction].type === "key" ? "key" : ""} ${direction} ${room.visited ? 'visitedDoor' : 'notVisitedDoor'}"></div>`)
                         .join('');
                     
                     return `<div class="${roomClass}">${doors}</div>`;
