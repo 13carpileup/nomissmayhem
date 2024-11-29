@@ -4,13 +4,13 @@ import { Projectile } from './Projectile.js';
 
 // Base Enemy class
 export class Enemy {
-    constructor(x, y, id, key=false, healing=false, radius=20) {
+    constructor(x, y, id, key=false, healing=false, radius=20, health=100) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         //console.log("radius:-----",radius)
         this.speed = 1.7;
-        this.health = 100;
+        this.health = health;
         this.type = 'regular';
         this.isActive = true;
         this.color = '#ff0000';
@@ -184,7 +184,7 @@ export class EnemyFactory {
         //console.log(healing);
         switch(type.toLowerCase()) {
             case 'regular':
-                return new Enemy(x, y, id, key, healing, radius);
+                return new Enemy(x, y, id, key, healing, radius, health);
             case 'shielded':
                 return new ShieldedEnemy(x, y, id, key, healing, radius);
             case 'reflector':

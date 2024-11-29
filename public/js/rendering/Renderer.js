@@ -335,7 +335,7 @@ export class Renderer {
     };
 
     if (room.travel.up.type=='door') {
-      const progress = room.travel.up.openreq == 0 ? 1 : room.travel.up.shotcount / room.travel.up.openreq;
+      const progress = room.travel.up.openreq == 0 || room.travel.up.open ? 1 : room.travel.up.shotcount / room.travel.up.openreq;
       drawPartialDoor(260, 0, 80, 20, progress);
     } else if (room.travel.up.type=='key') {
       this.ctx.fillStyle = 'yellow';
@@ -343,7 +343,7 @@ export class Renderer {
     }
 
     if (room.travel.down.type=='door') {
-      const progress = room.travel.down.openreq == 0 ? 1 : room.travel.down.shotcount / room.travel.down.openreq;
+      const progress = room.travel.down.openreq == 0 || room.travel.down.open ? 1 : room.travel.down.shotcount / room.travel.down.openreq;
       drawPartialDoor(260, 580, 80, 20, progress);
     } else if (room.travel.down.type=='key') {
       this.ctx.fillStyle = 'yellow';
@@ -351,7 +351,7 @@ export class Renderer {
     }
 
     if (room.travel.left.type=='door') {
-      const progress = room.travel.left.openreq == 0 ? 1 : room.travel.left.shotcount / room.travel.left.openreq;
+      const progress = room.travel.left.openreq == 0 || room.travel.left.open  ? 1 : room.travel.left.shotcount / room.travel.left.openreq;
       drawPartialDoor(0, 260, 20, 80, progress);
     } else if (room.travel.left.type=='key') {
       this.ctx.fillStyle = 'yellow';
@@ -359,7 +359,7 @@ export class Renderer {
     }
 
     if (room.travel.right.type=='door') {
-      const progress = room.travel.right.openreq == 0 ? 1 : room.travel.right.shotcount / room.travel.right.openreq;
+      const progress = room.travel.right.openreq == 0 || room.travel.right.open ? 1 : room.travel.right.shotcount / room.travel.right.openreq;
       drawPartialDoor(580, 260, 20, 80, progress);
     } else if (room.travel.right.type=='key') {
       this.ctx.fillStyle = 'yellow';

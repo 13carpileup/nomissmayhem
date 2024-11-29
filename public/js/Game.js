@@ -3,7 +3,7 @@ import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
 import { checkCollision, Clone } from './util/utils.js';
 import { checkDoorCollision, preloadRooms } from './structs/Rooms.js';
-import { Rooms, startIndex } from './gameDesign/testLevel.js'
+import { Rooms, startIndex } from './gameDesign/tutorial.js'
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
 import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
@@ -466,6 +466,8 @@ export class Game {
         this.player.x = 300
         this.getCurrentRoom().visited = 1;
         createMinimap(this.Rooms, this.roomPosition);
+
+        this.getCurrentRoom().travel.down.open = 1;
       }
     }
     //down
@@ -482,6 +484,8 @@ export class Game {
         this.player.x = 300
         this.getCurrentRoom().visited = 1;
         createMinimap(this.Rooms, this.roomPosition);
+
+        this.getCurrentRoom().travel.up.open = 1;
       }
     }
     //right
@@ -498,6 +502,8 @@ export class Game {
         this.player.y = 300
         this.getCurrentRoom().visited = 1;
         createMinimap(this.Rooms, this.roomPosition);
+
+        this.getCurrentRoom().travel.left.open = 1;
       }
     }
     //left
@@ -514,6 +520,8 @@ export class Game {
         this.player.y = 300
         this.getCurrentRoom().visited = 1;
         createMinimap(this.Rooms, this.roomPosition);
+
+        this.getCurrentRoom().travel.right.open = 1;
       }
     }
     
