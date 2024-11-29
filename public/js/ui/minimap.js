@@ -42,7 +42,7 @@ export function createMinimap(rooms, currentPosition) {
             }
             .door {
                 position: absolute;
-                background: #c75322;
+                background: #ccf0b1;
             }
             .key {
                 background: #ffd700;

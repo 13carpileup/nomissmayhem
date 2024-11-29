@@ -75,7 +75,6 @@ const t12 = new Room(
     [  
         EnemyFactory.createEnemy('regular', 300, 300),
         EnemyFactory.createEnemy('attacker', 250, 500, 'f', false, true),
-        EnemyFactory.createEnemy('attacker', 400, 400)
     ],
     "regular",
 );
@@ -84,7 +83,6 @@ const t02 = new Room(
     "/rooms/dungeon/d21.png", 
     createTravel(['wall', 0], ['door', 6], ['wall', 0], ['door', 4]), 
     [  
-        EnemyFactory.createEnemy('regular', 300, 300),
         EnemyFactory.createEnemy('attacker', 250, 500, 'f', false, true),
         EnemyFactory.createEnemy('attacker', 400, 400)
     ],
@@ -95,8 +93,6 @@ const t03 = new Room(
     "/rooms/dungeon/d21.png", 
     createTravel(['door', 5], ['wall', 0], ['wall', 0], ['door', 4]), 
     [  
-        EnemyFactory.createEnemy('regular', 300, 300),
-        EnemyFactory.createEnemy('regular', 400, 400),
         EnemyFactory.createEnemy('regular', 300, 400),
         EnemyFactory.createEnemy('regular', 500, 200),
         EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true),
