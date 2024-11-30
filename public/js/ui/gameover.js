@@ -13,7 +13,7 @@ export function gameOver(level, retry, levelSelect) {
     overlay.style.zIndex = '1000';
     overlay.style.minWidth = '280px';
     overlay.style.boxShadow = '0 0 0 4px #111, 0 0 0 8px #444';
-    overlay.id = "gameOver";
+        overlay.id = "gameOver";
     
     // Add game over text
     const gameOverText = document.createElement('div');
@@ -33,39 +33,63 @@ export function gameOver(level, retry, levelSelect) {
     scoreText.style.marginBottom = '32px';
     overlay.appendChild(scoreText);
     
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.justifyContent = 'center';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.flexDirection = 'column';
+    buttonContainer.style.gap = '16px';
+    
     // Add retry button
-    const retryButton = document.createElement('button');
-    retryButton.textContent = 'TRY AGAIN';
-    retryButton.style.fontFamily = "'Press Start 2P', monospace";
-    retryButton.style.fontSize = '16px';
-    retryButton.style.padding = '12px 24px';
-    retryButton.style.backgroundColor = '#222';
-    retryButton.style.color = '#fff';
-    retryButton.style.border = '4px solid #444';
-    retryButton.style.cursor = 'pointer';
-    retryButton.style.transition = 'all 0.1s';
-    
-    // Button hover and active states
-    retryButton.onmouseover = () => {
-        retryButton.style.backgroundColor = '#333';
-        retryButton.style.transform = 'scale(1.1)';
-    };
-    retryButton.onmouseout = () => {
-        retryButton.style.backgroundColor = '#222';
-        retryButton.style.transform = 'scale(1)';
-    };
-    retryButton.onmousedown = () => {
-        retryButton.style.transform = 'scale(0.95)';
-    };
-    retryButton.onmouseup = () => {
-        retryButton.style.transform = 'scale(1.1)';
-    };
-    
+    const retryButton = createButton('TRY AGAIN');
     retryButton.onclick = () => {
         document.getElementById("gameOver").remove();
         retry(level); // reinitialize game state
     };
-    overlay.appendChild(retryButton);
+    buttonContainer.appendChild(retryButton);
+    
+    // Add level select button
+    const levelSelectButton = createButton('LEVEL SELECT');
+    levelSelectButton.onclick = () => {
+        document.getElementById("gameOver").remove();
+        levelSelect(); // go back to level selection
+    };
+    buttonContainer.appendChild(levelSelectButton);
+    
+    overlay.appendChild(buttonContainer);
     
     return overlay;
-} 
+}
+
+// Helper function to create buttons with consistent styling
+function createButton(text) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.style.fontFamily = "'Press Start 2P', monospace";
+    button.style.fontSize = '16px';
+    button.style.padding = '12px 24px';
+    button.style.backgroundColor = '#222';
+    button.style.color = '#fff';
+    button.style.border = '4px solid #444';
+    button.style.cursor = 'pointer';
+    button.style.transition = 'all 0.1s';
+    button.style.block = "block";
+    
+    // Button hover and active states
+    button.onmouseover = () => {
+        button.style.backgroundColor = '#333';
+        button.style.transform = 'scale(1.1)';
+    };
+    button.onmouseout = () => {
+        button.style.backgroundColor = '#222';
+        button.style.transform = 'scale(1)';
+    };
+    button.onmousedown = () => {
+        button.style.transform = 'scale(0.95)';
+    };
+    button.onmouseup = () => {
+        button.style.transform = 'scale(1.1)';
+    };
+    
+    return button;
+}
