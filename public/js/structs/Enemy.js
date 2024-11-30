@@ -111,7 +111,7 @@ export class ShieldedEnemy extends Enemy {
         this.color = key ? '#f5c542' : '#00ff00';
         this.shieldActive = true;
         this.shieldAngle = 0; // Shield facing angle
-        this.shieldArc = Math.PI / 2; // Shield covers 90 degrees
+        this.shieldArc = Math.PI / 3; // Shield covers 90 degrees
         this.attackCooldown = 2000; // ms
         this.projectileSpeed = 6; // Projectile speed
         this.minDistanceFromPlayer = this.radius * 15; // Increased distance for attacker
