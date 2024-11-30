@@ -28,13 +28,13 @@ export function createMinimap(rooms, currentPosition) {
                 background: #555;
                 box-shadow: inset 1px 1px 0 #777, inset -1px -1px 0 #444;
             }
+            .room.shop.visited {
+                background: #4287f5;
+                box-shadow: inset 1px 1px 0 #6ac, inset -1px -1px 0 #268;
+            }
             .room.current {
                 background: #4a4;
                 box-shadow: inset 1px 1px 0 #6c6, inset -1px -1px 0 #282;
-            }
-            .shop {
-                background: #48a;
-                box-shadow: inset 1px 1px 0 #6ac, inset -1px -1px 0 #268;
             }
             .room.null {
                 background: #111;
