@@ -13,7 +13,8 @@ import { Health } from './structs/Health.js';
 import { Enemy, EnemyFactory } from './structs/Enemy.js';
 import { allRooms } from './levels.js';
 import { createStartScreen } from './ui/startscreen.js';
-  
+import { gameOver } from './ui/gameover.js';  
+
 export class Game {
   constructor() {
     this.currentLevel = 0;
@@ -23,10 +24,8 @@ export class Game {
 
   init() {
     console.log("Initializing...")
-    const gameOver = document.getElementById("gameOver");
-    console.log("TRYING TO REMOVE: " + gameOver);
-    if (gameOver) {
-      gameOver.remove();  
+    if (this.gameOverOverlay) {
+      this.gameOverOverlay.remove();  
     }
 
     this.canvas = document.getElementById('gameCanvas');
@@ -37,11 +36,7 @@ export class Game {
     this.lastBulletTime = Date.now();
     this.music = new Music();
     this.lastUpdate = Date.now();
-    this.moneyElement = document.getElementById('money');
-    this.moneyElement.textContent = `COINS: 0`;
 
-    this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
-    this.renderer = new Renderer(this.canvas, this.blurCanvas);
 
     //console.log("TEST ROOM: ", this.Rooms[5][2])
   
@@ -80,7 +75,14 @@ export class Game {
   }
 
   startGame(level) {
-    this.currentLevel = level;
+    this.moneyElement = document.getElementById('money');
+    this.moneyElement.textContent = `COINS: 0`;
+    this.lastTime = 0;
+    this.isGameRunning = true;
+
+    this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
+    this.renderer = new Renderer(this.canvas, this.blurCanvas);
+    this.currentLevel = level;  
     this.roomPosition = [...allRooms[this.currentLevel][1]]
     this.Rooms = allRooms[this.currentLevel][0].map(row => 
       row.map(room => ({
@@ -246,6 +248,7 @@ export class Game {
 
       // Check if player has died
       if (this.player.health <= 0) {
+        this.isGameRunning = false;
         this.gameOver();
         return;
       }
@@ -600,84 +603,10 @@ export class Game {
     this.isGameRunning = true;
   }
 
-  gameOver() {
-    this.isGameRunning = false;
-    
+  gameOver() {    
+    this.gameOverOverlay = gameOver(this.currentLevel, this.startGame.bind(this), this.init.bind(this));
+    document.body.appendChild(this.gameOverOverlay);
     // Create game over overlay
-    const overlay = document.createElement('div');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '50%';
-    overlay.style.left = '50%';
-    overlay.style.transform = 'translate(-50%, -50%)';
-    overlay.style.backgroundColor = '#111';
-    overlay.style.border = '4px solid #444';
-    overlay.style.padding = '32px';
-    overlay.style.imageRendering = 'pixelated';
-    overlay.style.textAlign = 'center';
-    overlay.style.zIndex = '1000';
-    overlay.style.minWidth = '280px';
-    overlay.style.boxShadow = '0 0 0 4px #111, 0 0 0 8px #444';
-    overlay.id = "gameOver";
-    
-    // Add game over text
-    const gameOverText = document.createElement('div');
-    gameOverText.textContent = 'GAME OVER';
-    gameOverText.style.color = '#ff4444';
-    gameOverText.style.fontFamily = "'Press Start 2P', monospace";
-    gameOverText.style.fontSize = '32px';
-    gameOverText.style.textShadow = '4px 4px #660000';
-    gameOverText.style.marginBottom = '24px';
-    overlay.appendChild(gameOverText);
-
-    // Add score display (if you have scoring)
-    const scoreText = document.createElement('div');
-    scoreText.style.color = '#fff';
-    scoreText.style.fontFamily = "'Press Start 2P', monospace";
-    scoreText.style.fontSize = '16px';
-    scoreText.style.marginBottom = '32px';
-    overlay.appendChild(scoreText);
-    
-    // Add retry button
-    const retryButton = document.createElement('button');
-    retryButton.textContent = 'TRY AGAIN';
-    retryButton.style.fontFamily = "'Press Start 2P', monospace";
-    retryButton.style.fontSize = '16px';
-    retryButton.style.padding = '12px 24px';
-    retryButton.style.backgroundColor = '#222';
-    retryButton.style.color = '#fff';
-    retryButton.style.border = '4px solid #444';
-    retryButton.style.cursor = 'pointer';
-    retryButton.style.transition = 'all 0.1s';
-    
-    // Button hover and active states
-    retryButton.onmouseover = () => {
-        retryButton.style.backgroundColor = '#333';
-        retryButton.style.transform = 'scale(1.1)';
-    };
-    retryButton.onmouseout = () => {
-        retryButton.style.backgroundColor = '#222';
-        retryButton.style.transform = 'scale(1)';
-    };
-    retryButton.onmousedown = () => {
-        retryButton.style.transform = 'scale(0.95)';
-    };
-    retryButton.onmouseup = () => {
-        retryButton.style.transform = 'scale(1.1)';
-    };
-    
-    retryButton.onclick = () => {
-        document.getElementById("gameOver").remove();
-        this.init(); // reinitialize game state
-    };
-    overlay.appendChild(retryButton);
-    
-    // Add @font-face rule for Press Start 2P font if not already in your CSS
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
-    
-    document.body.appendChild(overlay);
 } 
 
 gameWin() {
