@@ -26,8 +26,13 @@ export class Game {
 
   init() {
     console.log("Initializing...")
+    // Remove game over and win overlays
     if (this.gameOverOverlay) {
       this.gameOverOverlay.remove();  
+    }
+    if (this.winOverlay) {
+      this.winOverlay.remove();
+      this.winOverlay = null; // Prevent lingering references
     }
 
     this.canvas = document.getElementById('gameCanvas');
@@ -79,6 +84,9 @@ export class Game {
   startGame(level) {
     if (this.gameOverOverlay) {
       this.gameOverOverlay.remove();  
+    }
+    if (this.winOverlay) {
+      this.winOverlay.remove();
     }
 
     this.leaderboard.updateLevel(level);
@@ -454,7 +462,7 @@ export class Game {
             }
 
             enemy.radius -= 5;
-            
+
             //ENEMY TAKE DAMAGE
             if (checkCollision(enemy, proj)) {
                 enemy.takeDamage(20);
@@ -764,7 +772,7 @@ gameWin() {
                   })
               });
               
-              if (response.ok) {
+              if (response.ok && !submitButton.disabled) {
                   submitButton.textContent = 'SCORE SAVED!';
                   submitButton.disabled = true;
                   nameInput.disabled = true;
@@ -814,8 +822,23 @@ gameWin() {
       transition: all 0.1s;
   `;
 
+// Add play next button
+const playNextButton = document.createElement('button');
+playNextButton.textContent = 'PLAY NEXT';
+playNextButton.style.cssText = `
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    padding: 12px 24px;
+    margin: 8px;
+    background-color: #222;
+    color: #fff;
+    border: 4px solid #444;
+    cursor: pointer;
+    transition: all 0.1s;
+`;
+
   // Add button hover effects
-  [submitButton, playAgainButton].forEach(button => {
+  [submitButton, playAgainButton, playNextButton].forEach(button => {
       button.onmouseover = () => {
           button.style.backgroundColor = '#333';
           button.style.transform = 'scale(1.1)';
@@ -833,8 +856,13 @@ gameWin() {
   });
 
   playAgainButton.onclick = () => {
-      location.reload();
+    this.startGame(this.currentLevel)
   };
+
+  playNextButton.onclick = () => {
+    this.currentLevel += 1;
+    this.startGame(this.currentLevel);
+  }
   
   // Add animations
   const style = document.createElement('style');
@@ -858,13 +886,19 @@ gameWin() {
   overlay.appendChild(nameInput);
   overlay.appendChild(submitButton);
   overlay.appendChild(playAgainButton);
+  if (this.currentLevel != allRooms.length) {
+    overlay.appendChild(playNextButton);
+  }
   
   // Add fade-in animation
   overlay.style.opacity = '0';
   document.body.appendChild(overlay);
+
+  this.winOverlay = overlay; 
+
   requestAnimationFrame(() => {
-      overlay.style.transition = 'opacity 0.5s';
-      overlay.style.opacity = '1';
+    overlay.style.transition = 'opacity 0.5s';
+    overlay.style.opacity = '1';
   });
 }   
 }
