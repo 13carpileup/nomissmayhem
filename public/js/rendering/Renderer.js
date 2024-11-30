@@ -174,7 +174,7 @@ export class Renderer {
           this.ctx.fillStyle = 'red';
           this.ctx.fillRect(enemy.x - 25, enemy.y - enemy.radius - 10, 50, 5);
           this.ctx.fillStyle = 'green';
-          this.ctx.fillRect(enemy.x - 25, enemy.y - enemy.radius - 10, (enemy.health / 100) * 50, 5);
+          this.ctx.fillRect(enemy.x - 25, enemy.y - enemy.radius - 10, (enemy.health / enemy.maxHealth) * 50, 5);
         }
       });
     }
@@ -343,7 +343,7 @@ export class Renderer {
     }
 
     if (room.travel.down.type=='door') {
-      const progress = room.travel.down.openreq == 0 || room.travel.down.open ? 1 : room.travel.down.shotcount / room.travel.down.openreq;
+      const progress = room.travel.down.openreq == 0 || room.travel.down  .open ? 1 : room.travel.down.shotcount / room.travel.down.openreq;
       drawPartialDoor(260, 580, 80, 20, progress);
     } else if (room.travel.down.type=='key') {
       this.ctx.fillStyle = 'yellow';

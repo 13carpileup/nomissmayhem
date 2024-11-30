@@ -11,6 +11,7 @@ export class Enemy {
         //console.log("radius:-----",radius)
         this.speed = 1.7;
         this.health = health;
+        this.maxHealth = health;
         this.type = 'regular';
         this.isActive = true;
         this.color = '#ff0000';

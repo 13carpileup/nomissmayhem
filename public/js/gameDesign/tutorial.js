@@ -62,7 +62,7 @@ const b21 = new Room(
     "/rooms/dungeon/d10.png", 
     createTravel(['wall', 0], ['door', 0], ['wall', 4], ['key', 0]), 
     [  
-        EnemyFactory.createEnemy('regular', 300, 300,'key1',  true, false, 50, 60),
+        EnemyFactory.createEnemy('regular', 300, 300,'key1',  true, false, 40, 200),
         EnemyFactory.createEnemy('attacker', 250, 500),
         EnemyFactory.createEnemy('attacker', 400, 400)
     ],
