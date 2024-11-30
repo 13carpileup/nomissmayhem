@@ -452,7 +452,9 @@ export class Game {
                 // Increment bounce counter
                 proj.bounces++;
             }
+
             enemy.radius -= 5;
+            
             //ENEMY TAKE DAMAGE
             if (checkCollision(enemy, proj)) {
                 enemy.takeDamage(20);

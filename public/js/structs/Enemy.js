@@ -114,7 +114,7 @@ export class ShieldedEnemy extends Enemy {
         this.shieldArc = Math.PI / 3; // Shield covers 90 degrees
         this.attackCooldown = 2000; // ms
         this.projectileSpeed = 6; // Projectile speed
-        this.minDistanceFromPlayer = this.radius * 15; // Increased distance for attacker
+        this.minDistanceFromPlayer = this.radius * 10; // Increased distance for attacker
         this.lastAttack = 0;
         this.coinDrop = {
             type: 'silver',
