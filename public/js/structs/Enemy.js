@@ -169,7 +169,7 @@ export class ReflectorEnemy extends ShieldedEnemy {
     constructor(x, y, id, key, healing, radius) {
         super(x, y, id, key, healing, radius);
         this.type = 'reflector';
-        this.color = '#0000ff';
+        this.color = key ? '#f5c542' : '#0000ff';
         this.coinDrop = {
             type: 'gold',
             value: 5

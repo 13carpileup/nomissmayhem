@@ -24,7 +24,7 @@ const d00 = new Room(
 );
 
 const d01 = new Room(
-    "/rooms/dungeon/d21.png", 
+    "/rooms/dungeon/win.png", 
     createTravel(['door', 3], ['door', 0], ['wall', 5], ['wall', 5]), 
     [  
 
@@ -220,7 +220,7 @@ const d45 = new Room(
 );
 
 const winningRoom = new Room(
-    "/rooms/dungeon/d10.png", 
+    "/rooms/dungeon/win.png", 
     createTravel(['wall', 0], ['wall', 0], ['wall', 0], ['wall', 0]), 
     [  
 
