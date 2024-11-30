@@ -758,8 +758,9 @@ gameWin() {
 
   let time = this.elapsedTime;
   submitButton.onclick = async () => {
-      if (nameInput.value.trim()) {
+      if (nameInput.value.trim()&&!submitButton.disabled) {
           try {
+              submitButton.disabled = true;
               const response = await fetch('https://nomissmayhem.shuttleapp.rs/score', {
                   method: 'POST',
                   headers: {
@@ -799,6 +800,7 @@ gameWin() {
                   overlay.appendChild(leaderboardDiv);
               }
           } catch (error) {
+              submitButton.disabled = true;
               console.error('Error submitting score:', error);
               submitButton.textContent = 'ERROR!';
           }
