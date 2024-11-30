@@ -13,6 +13,7 @@ export class Room {
         this.coins = [];
         this.keys = [];
         this.health = [];
+        this.lasers = [];
         this.type = type;
         this.visited = 0;
         this.imageRef = new Image();

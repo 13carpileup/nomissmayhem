@@ -126,7 +126,7 @@ const d23 = new Room(
     "/rooms/dungeon/d21.png", 
     createTravel(['door', 5], ['door', 6], ['door', 5], ['door', 0]), 
     [  
-        EnemyFactory.createEnemy('shielded', 200, 300, 'health', false, true),
+        EnemyFactory.createEnemy('laser', 200, 300, 'health', false, true),
     ],
     "regular",
 );

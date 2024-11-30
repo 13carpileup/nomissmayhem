@@ -117,8 +117,8 @@ export class ShieldedEnemy extends Enemy {
         this.minDistanceFromPlayer = this.radius * 10; // Increased distance for attacker
         this.lastAttack = 0;
         this.coinDrop = {
-            type: 'silver',
-            value: 2
+            type: 'gold',
+            value: 5
         };
     }
 
@@ -166,8 +166,8 @@ export class ShieldedEnemy extends Enemy {
 
 // Reflector Enemy
 export class ReflectorEnemy extends ShieldedEnemy {
-    constructor(x, y) {
-        super(x, y);
+    constructor(x, y, id, key, healing, radius) {
+        super(x, y, id, key, healing, radius);
         this.type = 'reflector';
         this.color = '#0000ff';
         this.coinDrop = {
@@ -187,32 +187,51 @@ export class LaserEnemy extends Enemy {
     constructor(x, y) {
         super(x, y);
         this.type = 'laser';
-        this.color = '#ffff00';
+        this.color = '#9c19ff';
         this.isCharging = false;
-        this.chargeTime = 1000; // ms
+        this.chargeTime = 150; // ms
+        this.cooldown = 4000;
+        this.lastShot = 0;
+        this.fired = 0;
         this.chargeStart = 0;
         this.laserWidth = 5;
+        this.laserTime = 4000;
+        this.minDistanceFromPlayer = this.radius * 12; // Increased distance for attacker
     }
 
     update(player, gameTime) {
-        if (!this.isCharging) {
-            this.startCharging(gameTime);
-        } else if (gameTime - this.chargeStart >= this.chargeTime) {
-            return this.fireLaser(player);
+        if (!this.fired) {
+            this.fired = 1;
+            this.lastShot = gameTime - 2500;
         }
+        super.update(player);
+        if ((gameTime - this.lastShot) >= this.cooldown ) {
+            this.lastShot = gameTime;
+            return this.fireLaser(player, gameTime);
+        } 
         return null;
     }
 
-    startCharging(gameTime) {
-        this.isCharging = true;
-        this.chargeStart = gameTime;
+    startCharging(player, gameTime) {
+
     }
 
-    fireLaser(player) {
-        // Implement laser firing logic
-        this.isCharging = false;
-        // Return laser object or effect
+    fireLaser(player, gameTime) {
+        const angle = Math.atan2(
+            player.y - this.y,
+            player.x - this.x
+        );
+
+        return {
+            x: this.x,
+            y: this.y,
+            angle: angle,
+            fireTime: gameTime,
+            remainTime: this.laserTime,
+            delay: this.chargeTime
+        }
     }
+
 }
 
 // Enemy Factory

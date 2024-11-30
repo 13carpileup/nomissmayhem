@@ -1,7 +1,7 @@
 import { Player } from './player/Player.js';
 import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
-import { checkCollision, Clone } from './util/utils.js';
+import { checkCollision, Clone, checkLaserCollision } from './util/utils.js';
 import { checkDoorCollision, preloadRooms } from './structs/Rooms.js';
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
@@ -426,23 +426,46 @@ export class Game {
 
     this.getCurrentRoom().enemies.forEach((enemy, index) => {
       if (enemy.isActive) {
-        // console.log(enemy)
-        // console.log(enemy.x)
-        const enemyProjectile = enemy.update(this.player, Date.now());
-        // console.log(enemyProjectile)
 
-        // If enemy fired a projectile, add it to projectiles array
+        if (enemy.type != 'laser') {
+          const enemyProjectile = enemy.update(this.player, Date.now());
 
-        if (enemyProjectile) {
-          this.getCurrentRoom().projectiles.push(enemyProjectile);
-          this.enemyShootSound.currentTime = 0; // Reset sound to start
-          this.enemyShootSound.play();
+          if (enemyProjectile) {
+            this.getCurrentRoom().projectiles.push(enemyProjectile);
+            let shootSound = new Audio('./assets/shoot0.mp3');
+            shootSound.volume = 0.45
+            shootSound.play();
+          }
+        }
+
+        else {
+          const enemyLaser = enemy.update(this.player, Date.now());
+
+          if (enemyLaser) {
+            console.log("LASER FIRED!!!!");
+            this.getCurrentRoom().lasers.push(enemyLaser);
+            let shootSound = new Audio('./assets/laser.mp3');
+            shootSound.volume = 0.45
+            shootSound.play();
+
+          }
         }
 
         // Check collision with player
         if (enemy.checkCollision(this.player)) {
           this.handleCollision();
         }
+
+        //BIG FUCKING LASER
+        this.getCurrentRoom().lasers.forEach((laser, laserIndex) => {
+          if ((Date.now() - laser.fireTime) >= laser.remainTime) {
+            this.getCurrentRoom().lasers.splice(laserIndex, 1);
+          }
+
+          if (((Date.now() - laser.fireTime) >= laser.delay) && checkLaserCollision(this.player, laser)) {
+            this.handleCollision();
+          }
+        })
 
         // Check collision with player's projectiles
         this.getCurrentRoom().projectiles.forEach((proj, projIndex) => {

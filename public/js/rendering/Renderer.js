@@ -143,6 +143,24 @@ export class Renderer {
     } else if (!player.canDash) {
       color = "#85b1ff";
     }
+    let lasers = room.lasers;
+    if (lasers && lasers.length > 0) {
+      lasers.forEach(laser => {
+          if (!((Date.now() - laser.fireTime) > laser.delay)) {
+            return;
+          }
+          const laserLength = 10000; // Length of the laser line
+          const endX = laser.x + Math.cos(laser.angle) * laserLength;
+          const endY = laser.y + Math.sin(laser.angle) * laserLength;
+
+          this.ctx.beginPath();
+          this.ctx.moveTo(laser.x, laser.y);
+          this.ctx.lineTo(endX, endY);
+          this.ctx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - (Date.now() - laser.fireTime) / laser.remainTime) + ')'
+          this.ctx.lineWidth = 10; // Thickness of the laser line
+          this.ctx.stroke();
+      });
+  }
 
     // Draw the pixelated player
     drawPixelPlayer(this.ctx, player.x, player.y, 42, color);
@@ -167,7 +185,7 @@ export class Renderer {
         player.x + Math.cos(angle + Math.PI) * arrowLength,
         player.y + Math.sin(angle+ Math.PI) * arrowLength
       );
-      
+
       this.ctx.stroke();
     }
 
