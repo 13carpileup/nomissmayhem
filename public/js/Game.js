@@ -508,32 +508,49 @@ export class Game {
             if (checkCollision(enemy, proj)) {
                 enemy.takeDamage(20);
                 this.getCurrentRoom().projectiles.splice(projIndex, 1);
+                if (!enemy.isActive) {
+                  console.log("enemy", enemy);
+                  const coin = new Coin(enemy.x, enemy.y, enemy.coinDrop.value, enemy.coinDrop.type);
+                  this.getCurrentRoom().coins.push(coin);
+                  if (enemy.hasKey) {
+                    console.log("dropping key");
+                    const key = new Key(enemy.id, enemy.x, enemy.y);
+                    this.getCurrentRoom().keys.push(key);
+                  }
+                  if (enemy.healing) {
+                    console.log("dropping health");
+                    const healing = new Health(enemy.id, enemy.x, enemy.y);
+                    this.getCurrentRoom().health.push(healing)
+                  }
+                  console.log('Created coin:', coin);
+                  console.log('Current room coins:', this.getCurrentRoom().coins);
+                }
             }
         }
 
           else if (!proj.isEnemyProjectile && checkCollision(enemy, proj)) {
             enemy.takeDamage(20);
             this.getCurrentRoom().projectiles.splice(projIndex, 1);
+            if (!enemy.isActive) {
+              console.log("enemy", enemy);
+              const coin = new Coin(enemy.x, enemy.y, enemy.coinDrop.value, enemy.coinDrop.type);
+              this.getCurrentRoom().coins.push(coin);
+              if (enemy.hasKey) {
+                console.log("dropping key");
+                const key = new Key(enemy.id, enemy.x, enemy.y);
+                this.getCurrentRoom().keys.push(key);
+              }
+              if (enemy.healing) {
+                console.log("dropping health");
+                const healing = new Health(enemy.id, enemy.x, enemy.y);
+                this.getCurrentRoom().health.push(healing)
+              }
+              console.log('Created coin:', coin);
+              console.log('Current room coins:', this.getCurrentRoom().coins);
+            }
           }
 
-          // Drop coin when enemy dies
-          if (!enemy.isActive) {
-            console.log("enemy", enemy);
-            const coin = new Coin(enemy.x, enemy.y, enemy.coinDrop.value, enemy.coinDrop.type);
-            this.getCurrentRoom().coins.push(coin);
-            if (enemy.hasKey) {
-              console.log("dropping key");
-              const key = new Key(enemy.id, enemy.x, enemy.y);
-              this.getCurrentRoom().keys.push(key);
-            }
-            if (enemy.healing) {
-              console.log("dropping health");
-              const healing = new Health(enemy.id, enemy.x, enemy.y);
-              this.getCurrentRoom().health.push(healing)
-            }
-            console.log('Created coin:', coin);
-            console.log('Current room coins:', this.getCurrentRoom().coins);
-          }
+
         });
       } else {
         this.getCurrentRoom().enemies.splice(index, 1);
