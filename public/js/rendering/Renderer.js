@@ -26,8 +26,8 @@ export class Renderer {
   // Draw the background image scaled to fit the canvas
     this.ctx.drawImage(
       this.bgImg,
-      600,
-      600,
+      this.canvas.width,
+      this.canvas.height,
       this.canvas.width,
       this.canvas.height
     );
@@ -161,6 +161,15 @@ export class Renderer {
     this.ctx.strokeStyle = '#fff';
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
+
+    if (player.double) {
+      this.ctx.lineTo(
+        player.x + Math.cos(angle + Math.PI) * arrowLength,
+        player.y + Math.sin(angle+ Math.PI) * arrowLength
+      );
+      
+      this.ctx.stroke();
+    }
 
     // Add null check for enemies
     if (enemies && enemies.length > 0) {

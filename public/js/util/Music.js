@@ -2,6 +2,8 @@ export class Music {
     constructor() {
         this.tracks = [
             '../assets/Counterspell.mp3',
+            '../assets/track1.mp3',
+            '../assets/track2.mp3',
 
         ];
 

@@ -26,6 +26,8 @@ export class Player {
     this.money = 0;
     this.keys = [];
     this.health = PLAYER.MAX_HEALTH;
+    this.double = 0;
+    this.spread = 0;
 
     this.healthBar = new PixelHealthBar(PLAYER.MAX_HEALTH, {
       // Optional custom settings
@@ -139,6 +141,14 @@ export class Player {
 
       case "super":
         this.shootCooldown = 0;
+        break;
+
+      case "double":
+        this.double = 1;
+        break;
+
+      case "spread":
+        this.spread = 1;
         break;
 
     }

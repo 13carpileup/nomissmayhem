@@ -86,7 +86,7 @@ const s12 = new Room(
     [  
     ],
     "shop",
-    [['double', 5, 'Double Barrel', 'Gives you a second gun to shoot with!'], ['extrahealth', 3, 'Extra Health', 'Increases your maximum health!']]
+    [['super', 2, 'Super Shot', 'Removes all shooting cooldown!'], ['extrahealth', 1, 'Extra Health', 'Increases your maximum health!']]
 );
 
 const d13 = new Room(
@@ -124,7 +124,7 @@ const d22 = new Room(
 
 const d23 = new Room(
     "/rooms/dungeon/d21.png", 
-    createTravel(['door', 5], ['door', 6], ['door', 5], ['key', 0]), 
+    createTravel(['door', 5], ['door', 6], ['door', 5], ['door', 0]), 
     [  
         EnemyFactory.createEnemy('shielded', 200, 300, 'health', false, true),
     ],
@@ -145,7 +145,7 @@ const s33 = new Room(
     [  
     ],
     "shop",
-    [['super', 8, 'Super Shot', 'Removes ALL shooting cooldown!'], ['extrahealth', 5, 'Extra Health', 'Increases your maximum health!']]
+    [['double', 0, 'Double Shot', 'Gives you a second gun!'], ['spread', 0, 'Spread Shot', 'Gives you a triple gun!!!!']]
 );
 
 const d43 = new Room(
@@ -182,9 +182,9 @@ const winningRoom = new Room(
     "win",
 );
 
-export const indexLevel1 = [4, 2];
+export const indexLevel2 = [4, 2];
 
-export const roomsLevel1 = [
+export const roomsLevel2 = [
     [d00, d10, nullTile, nullTile, nullTile],
     [d01, d11, d21, nullTile, winningRoom],
     [d02, s12, d22, nullTile, b42],

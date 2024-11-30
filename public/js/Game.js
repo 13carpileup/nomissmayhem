@@ -41,7 +41,14 @@ export class Game {
     this.dashElement = document.getElementById('dash');
     this.ui = document.getElementById('noselect');
     this.lastBulletTime = Date.now();
+
     this.music = new Music();
+
+
+
+    this.enemyShootSound = new Audio('./assets/shoot0.mp3');
+    this.enemyShootSound.volume = 0.6
+
     this.lastUpdate = Date.now();
 
 
@@ -236,24 +243,7 @@ export class Game {
       if (!this.isGameStarted) return;
       this.isMouseDown = false;
     });
-  
 
-    window.addEventListener('click', (e) => {
-      if (!this.isGameStarted) return;
-      const currentTime = Date.now();
-      //console.log(currentTime);
-      if ((currentTime - this.lastBulletTime) >= this.player.shootCooldown) {
-        // Check if enough time has passed since the last bullet was fired
-        const rect = this.canvas.getBoundingClientRect();
-        const canvasX = e.clientX - rect.left;
-        const canvasY = e.clientY - rect.top;
-
-        const angle = Math.atan2(canvasY - this.player.y, canvasX - this.player.x);
-        this.getCurrentRoom().projectiles.push(new Projectile(this.player.x, this.player.y, angle, 35, 5));
-
-        this.lastBulletTime = currentTime; // Update the last bullet firing time
-      }
-    });
   }
 
   handleCollision() {
@@ -403,10 +393,29 @@ export class Game {
           this.mouseY - this.player.y,
           this.mouseX - this.player.x
         );
-        
+        let shootSound = new Audio('./assets/shoot2.mp3');
+        shootSound.volume = 0.45
+        shootSound.play();
         this.getCurrentRoom().projectiles.push(
           new Projectile(this.player.x, this.player.y, angle, 35, 5)
         );
+
+        if (this.player.double) {
+          // let newAngle = angle + Math.PI;
+          this.getCurrentRoom().projectiles.push(
+            new Projectile(this.player.x, this.player.y, angle + Math.PI, 35, 5)
+          );
+        }
+
+        if (this.player.spread) {
+          // let newAngle = angle + Math.PI;
+          this.getCurrentRoom().projectiles.push(
+            new Projectile(this.player.x, this.player.y, angle + Math.PI / 12, 35, 5)
+          );
+          this.getCurrentRoom().projectiles.push(
+            new Projectile(this.player.x, this.player.y, angle - Math.PI / 12, 35, 5)
+          );
+        }
   
         this.lastBulletTime = currentTime;
       }
@@ -423,8 +432,11 @@ export class Game {
         // console.log(enemyProjectile)
 
         // If enemy fired a projectile, add it to projectiles array
+
         if (enemyProjectile) {
           this.getCurrentRoom().projectiles.push(enemyProjectile);
+          this.enemyShootSound.currentTime = 0; // Reset sound to start
+          this.enemyShootSound.play();
         }
 
         // Check collision with player
@@ -838,8 +850,23 @@ playNextButton.style.cssText = `
     transition: all 0.1s;
 `;
 
+  // Add play next button
+  const levelSelectButton = document.createElement('button');
+  levelSelectButton.textContent = 'LEVEL SELECT';
+  levelSelectButton.style.cssText = `
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      padding: 12px 24px;
+      margin: 8px;
+      background-color: #222;
+      color: #fff;
+      border: 4px solid #444;
+      cursor: pointer;
+      transition: all 0.1s;
+  `;
+
   // Add button hover effects
-  [submitButton, playAgainButton, playNextButton].forEach(button => {
+  [submitButton, playAgainButton, playNextButton, levelSelectButton].forEach(button => {
       button.onmouseover = () => {
           button.style.backgroundColor = '#333';
           button.style.transform = 'scale(1.1)';
@@ -864,6 +891,10 @@ playNextButton.style.cssText = `
     this.currentLevel += 1;
     this.startGame(this.currentLevel);
   }
+
+  levelSelectButton.onclick = () => {
+    this.init();
+  }
   
   // Add animations
   const style = document.createElement('style');
@@ -887,8 +918,12 @@ playNextButton.style.cssText = `
   overlay.appendChild(nameInput);
   overlay.appendChild(submitButton);
   overlay.appendChild(playAgainButton);
-  if (this.currentLevel != allRooms.length) {
+  
+  if (this.currentLevel != (allRooms.length - 1)) {
     overlay.appendChild(playNextButton);
+  }
+  else {
+    overlay.appendChild(levelSelectButton);
   }
   
   // Add fade-in animation

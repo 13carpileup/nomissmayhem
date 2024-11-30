@@ -6,7 +6,7 @@ const emptyRoom = new Room(
     "/rooms/dungeon/d11.png", 
     createTravel(['wall', 0], ['door', 0], ['door', 5], ['wall', 0]), 
     [  
-        EnemyFactory.createEnemy('attacker', 150, 100, 'keyer', true),
+        EnemyFactory.createEnemy('attacker', 150, 100, 'keyer'),
         EnemyFactory.createEnemy('attacker', 250, 200, 'keyless'),
     ],
     "regular"
