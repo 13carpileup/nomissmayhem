@@ -14,7 +14,7 @@ export class Enemy {
         this.maxHealth = health;
         this.type = 'regular';
         this.isActive = true;
-        this.color = '#ff0000';
+        this.color = key ? '#f5c542' : '#ff0000';
         this.minDistanceFromPlayer = this.radius * 1.5; // Minimum distance to maintain from player
         this.coinDrop = {
             type: 'bronze',
