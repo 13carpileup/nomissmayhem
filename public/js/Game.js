@@ -444,9 +444,7 @@ export class Game {
           if (enemyLaser) {
             console.log("LASER FIRED!!!!");
             this.getCurrentRoom().lasers.push(enemyLaser);
-            let shootSound = new Audio('./assets/laser.mp3');
-            shootSound.volume = 0.45
-            shootSound.play();
+
 
           }
         }
@@ -461,6 +459,14 @@ export class Game {
           if ((Date.now() - laser.fireTime) >= laser.remainTime) {
             this.getCurrentRoom().lasers.splice(laserIndex, 1);
           }
+          
+          if (((Date.now() - laser.fireTime) >= laser.delay) && !laser.sound) {
+            let shootSound = new Audio('./assets/laser.mp3');
+            shootSound.volume = 0.45
+            shootSound.play();
+            laser.sound = 1;
+          }
+
 
           if (((Date.now() - laser.fireTime) >= laser.delay) && checkLaserCollision(this.player, laser)) {
             this.handleCollision();

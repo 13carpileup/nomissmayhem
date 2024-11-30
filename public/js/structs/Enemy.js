@@ -189,13 +189,19 @@ export class LaserEnemy extends Enemy {
         this.type = 'laser';
         this.color = '#9c19ff';
         this.isCharging = false;
-        this.chargeTime = 150; // ms
-        this.cooldown = 4000;
+        this.chargeTime = 200; // ms
+        this.cooldown = 2500;
         this.lastShot = 0;
         this.fired = 0;
         this.chargeStart = 0;
         this.laserWidth = 5;
-        this.laserTime = 4000;
+        this.laserTime = 2000;
+        this.health = 150;
+        this.maxHealth = 150;
+        this.coinDrop = {
+            type: 'gold',
+            value: 5
+        };
         this.minDistanceFromPlayer = this.radius * 12; // Increased distance for attacker
     }
 
@@ -212,10 +218,6 @@ export class LaserEnemy extends Enemy {
         return null;
     }
 
-    startCharging(player, gameTime) {
-
-    }
-
     fireLaser(player, gameTime) {
         const angle = Math.atan2(
             player.y - this.y,
@@ -228,7 +230,8 @@ export class LaserEnemy extends Enemy {
             angle: angle,
             fireTime: gameTime,
             remainTime: this.laserTime,
-            delay: this.chargeTime
+            delay: this.chargeTime,
+            sound: 0,
         }
     }
 
