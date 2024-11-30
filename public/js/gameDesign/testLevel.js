@@ -144,9 +144,9 @@ const winningRoom = new Room(
     "win",
 );
 
-export const startIndex = [6, 2];
+export const indexTest = [6, 2];
 
-export const Rooms = [
+export const roomsTest = [
     [defaultRoom07, keyRoom, nullTile],
     [defaultRoom06, nullTile, nullTile],
     [defaultRoom05, storeRoom15, nullTile],

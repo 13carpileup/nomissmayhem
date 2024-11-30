@@ -3,7 +3,6 @@ import { Projectile } from './structs/Projectile.js';
 import { Renderer } from './rendering/Renderer.js';
 import { checkCollision, Clone } from './util/utils.js';
 import { checkDoorCollision, preloadRooms } from './structs/Rooms.js';
-import { Rooms, startIndex } from './gameDesign/tutorial.js'
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
 import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
@@ -12,9 +11,13 @@ import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
 import { Health } from './structs/Health.js';
 import { Enemy, EnemyFactory } from './structs/Enemy.js';
+import { allRooms } from './levels.js';
+import { createStartScreen } from './ui/startscreen.js';
   
 export class Game {
   constructor() {
+    this.currentLevel = 0;
+
     this.init();
   }
 
@@ -39,8 +42,47 @@ export class Game {
 
     this.player = new Player(CANVAS.WIDTH / 2, CANVAS.HEIGHT / 2);
     this.renderer = new Renderer(this.canvas, this.blurCanvas);
-    this.roomPosition = [...startIndex]
-    this.Rooms = Rooms.map(row => 
+
+    //console.log("TEST ROOM: ", this.Rooms[5][2])
+  
+    
+  
+
+    //console.log("reinit log: ", this.roomPosition, startIndex);
+
+    this.hitCount = 0;
+    this.isMouseDown = false;
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.keys = {
+      w: false,
+      a: false,
+      s: false, 
+      d: false,
+      shift: false,
+    };
+
+
+    this.isGameRunning = true;
+
+    this.fixedTimeStep = 1000/60; // 60 fps physics update rate
+    this.lastTime = 0;
+    this.accumulator = 0;
+    this.isGameStarted = false;
+    
+    this.ui.style.opacity = 1;
+
+    allRooms.forEach((room) => {
+      preloadRooms(room[0]);
+    })
+    
+    this.createStartScreen(); 
+  }
+
+  startGame(level) {
+    this.currentLevel = level;
+    this.roomPosition = [...allRooms[this.currentLevel][1]]
+    this.Rooms = allRooms[this.currentLevel][0].map(row => 
       row.map(room => ({
           ...room,                              
           enemies: room.beginEnemies.map(enemy => 
@@ -71,39 +113,7 @@ export class Game {
       }))
     );
     this.Rooms[this.roomPosition[0]][this.roomPosition[1]].visited = 1; 
-    //console.log("TEST ROOM: ", this.Rooms[5][2])
-  
     
-  
-
-    //console.log("reinit log: ", this.roomPosition, startIndex);
-
-    this.hitCount = 0;
-    this.isMouseDown = false;
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.keys = {
-      w: false,
-      a: false,
-      s: false, 
-      d: false,
-      shift: false,
-    };
-
-
-    this.isGameRunning = true;
-
-    this.fixedTimeStep = 1000/60; // 60 fps physics update rate
-    this.lastTime = 0;
-    this.accumulator = 0;
-    this.isGameStarted = false;
-    
-    this.ui.style.opacity = 1;
-    preloadRooms(Rooms);
-    this.createStartScreen(); 
-  }
-
-  startGame() {
     this.isGameStarted = true;
     this.timerElement = document.getElementById('timer');
     this.startTime = Date.now();
@@ -113,193 +123,10 @@ export class Game {
   }
 
   createStartScreen() {
-    this.startScreen = document.createElement('div');
-    this.startScreen.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #111;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        image-rendering: pixelated;
-        overflow: hidden;
-    `;
-
-    // Create CRT scanline effect
-    const scanlines = document.createElement('div');
-    scanlines.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            transparent 50%,
-            rgba(0, 0, 0, 0.1) 50%
-        );
-        background-size: 100% 4px;
-        pointer-events: none;
-        z-index: 1001;
-    `;
-
-    // Create glowing title container
-    const titleContainer = document.createElement('div');
-    titleContainer.style.cssText = `
-        position: relative;
-        margin-bottom: 48px;
-        animation: float 4s ease-in-out infinite;
-    `;
-
-    const title = document.createElement('h1');
-    title.textContent = 'NO MISS MAYHEM';
-    title.style.cssText = `
-        color: #ff4444;
-        font-family: 'Press Start 2P', monospace;
-        font-size: 48px;
-        text-align: center;
-        text-shadow: 
-            0 0 10px #ff0000,
-            4px 4px 0 #660000;
-        letter-spacing: 2px;
-        animation: pulse 2s ease-in-out infinite;
-    `;
-
-    const subtitle = document.createElement('div');
-    subtitle.textContent = 'YOU ARE YOUR OWN ENEMY';
-    subtitle.style.cssText = `
-        color: #aaa;
-        font-family: 'Press Start 2P', monospace;
-        font-size: 16px;
-        text-align: center;
-        margin-top: 16px;
-        letter-spacing: 4px;
-    `;
-
-    // Create menu container
-    const menuContainer = document.createElement('div');
-    menuContainer.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        align-items: center;
-        background: #000;
-        padding: 32px;
-        border: 4px solid #444;
-        box-shadow: 0 0 0 4px #111, 0 0 0 8px #444;
-    `;
-
-    const startButton = document.createElement('button');
-    startButton.textContent = 'START GAME';
-    startButton.style.cssText = `
-        padding: 16px 32px;
-        font-size: 20px;
-        font-family: 'Press Start 2P', monospace;
-        background-color: #222;
-        color: #fff;
-        border: 4px solid #444;
-        cursor: pointer;
-        transition: all 0.1s;
-        position: relative;
-        text-shadow: 2px 2px #000;
-    `;
-
-    // Create decorative pixel art borders
-    const createPixelBorder = () => {
-        const border = document.createElement('div');
-        border.style.cssText = `
-            position: absolute;
-            width: 100%;
-            height: 16px;
-            background-color: #222;
-            border-top: 4px solid #444;
-            border-bottom: 4px solid #444;
-        `;
-        return border;
-    };
-
-    const topBorder = createPixelBorder();
-    topBorder.style.top = '0';
-    const bottomBorder = createPixelBorder();
-    bottomBorder.style.bottom = '0';
-
-    // Add animations
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Add button interactions
-    startButton.onmouseover = () => {
-        startButton.style.backgroundColor = '#333';
-        startButton.style.transform = 'scale(1.1)';
-    };
-    startButton.onmouseout = () => {
-        startButton.style.backgroundColor = '#222';
-        startButton.style.transform = 'scale(1)';
-    };
-    startButton.onmousedown = () => {
-        startButton.style.transform = 'scale(0.95)';
-    };
-    startButton.onmouseup = () => {
-        startButton.style.transform = 'scale(1.1)';
-    };
-    startButton.onclick = () => {
-        startButton.style.transform = 'scale(0.95)';
-        setTimeout(() => this.startGame(), 100);
-    };
-
-    // Add decorative pixel corners
-    const corners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'].map(position => {
-        const corner = document.createElement('div');
-        corner.style.cssText = `
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            border: 4px solid #444;
-            ${position.includes('top') ? 'top: 16px' : 'bottom: 16px'};
-            ${position.includes('left') ? 'left: 16px' : 'right: 16px'};
-        `;
-        return corner;
-    });
-
-    // Add font
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
-
-    // Assemble the screen
-    titleContainer.appendChild(title);
-    titleContainer.appendChild(subtitle);
-    menuContainer.appendChild(startButton);
-    this.startScreen.appendChild(scanlines);
-    this.startScreen.appendChild(titleContainer);
-    this.startScreen.appendChild(menuContainer);
-    corners.forEach(corner => this.startScreen.appendChild(corner));
-    this.startScreen.appendChild(topBorder);
-    this.startScreen.appendChild(bottomBorder);
-    document.body.appendChild(this.startScreen);
-
-    // Add fade-in animation
-    this.startScreen.style.opacity = '0';
-    requestAnimationFrame(() => {
-        this.startScreen.style.transition = 'opacity 1s';
-        this.startScreen.style.opacity = '1';
-    });
-}
+    const startScreen = createStartScreen(allRooms, this.startGame.bind(this));
+    this.startScreen = startScreen;
+    document.body.appendChild(startScreen);
+  }
 
   setup() {
     this.resizeCanvas();
