@@ -8,14 +8,15 @@ use tower_http::cors::{CorsLayer, Any};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, HashMap};
 use std::cmp::Reverse;
 use shuttle_persist::PersistInstance;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Entry {
     name: String,
     time: i32,
+    level: String,
 }   
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -23,11 +24,12 @@ struct LeaderboardEntry {
     position: usize,
     name: String,
     time: i32,
+    level: String,
 }
 
 #[derive(Clone)]
 struct AppState {
-    heap: Arc<Mutex<BinaryHeap<Reverse<Entry>>>>,
+    heaps: Arc<Mutex<HashMap<String, BinaryHeap<Reverse<Entry>>>>>,
     persist: PersistInstance,
 }
 
@@ -64,82 +66,85 @@ async fn add_score(
     }
 
     // Validate time (positive and reasonable)
-    if entry.time <= 0 || entry.time > 3600*1000 {  // Max 1 hour in seconds
+    if entry.time <= 0 || entry.time > 3600*1000 {  // Max 1 hour in milliseconds
         return (
             StatusCode::BAD_REQUEST,
-            Json("Time must be between 1 and 3600 seconds")
+            Json("Time must be between 1 and 3600000 milliseconds")
         ).into_response();
     }
 
-    let mut leaderboard = state.heap.lock().await;
-    
-    // Limit total entries to 100
-    if leaderboard.len() >= 100 {
-        let max_time = leaderboard.peek().map(|Reverse(entry)| entry.time).unwrap_or(i32::MAX);
-        if entry.time >= max_time {
-            return (
-                StatusCode::BAD_REQUEST,
-                Json("Leaderboard full and this score doesn't qualify")
-            ).into_response();
-        }
-        leaderboard.pop();  // Remove the worst score
+    // Validate level (non-empty)
+    if entry.level.is_empty() {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json("Level must not be empty")
+        ).into_response();
     }
 
-    leaderboard.push(Reverse(entry));
+    let mut heaps = state.heaps.lock().await;
+    let leaderboard = heaps.entry(entry.level.clone()).or_insert_with(BinaryHeap::new);
+
+    leaderboard.push(Reverse(entry.clone()));
     
-    let entries: Vec<Entry> = leaderboard
+    let entries: HashMap<String, Vec<Entry>> = heaps
         .iter()
-        .map(|Reverse(entry)| Entry {
-            name: entry.name.clone(),
-            time: entry.time,
+        .map(|(level, heap)| {
+            (level.clone(), heap.iter().map(|Reverse(entry)| entry.clone()).collect())
         })
         .collect();
     
-    state.persist.save("leaderboard", entries)
-        .expect("Failed to save leaderboard");
+    state.persist.save("leaderboards", entries)
+        .expect("Failed to save leaderboards");
         
     (StatusCode::CREATED, Json("Score added successfully")).into_response()
 }
 
 async fn get_leaderboard(
     State(state): State<AppState>,
-) -> Json<Vec<LeaderboardEntry>> {
-    let leaderboard = state.heap.lock().await;
-    let mut entries: Vec<LeaderboardEntry> = leaderboard
-        .iter()
-        .enumerate()
-        .map(|(i, Reverse(entry))| LeaderboardEntry {
-            position: i + 1, 
-            name: entry.name.clone(),
-            time: entry.time,
-        })
-        .collect();
+) -> Json<HashMap<String, Vec<LeaderboardEntry>>> {
+    let heaps = state.heaps.lock().await;
+    let mut leaderboards = HashMap::new();
 
-    entries.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(std::cmp::Ordering::Equal));
-    
-    for (i, entry) in entries.iter_mut().enumerate() {
-        entry.position = i + 1;
+    for (level, heap) in heaps.iter() {
+        let mut entries: Vec<LeaderboardEntry> = heap
+            .iter()
+            .enumerate()
+            .map(|(i, Reverse(entry))| LeaderboardEntry {
+                position: i + 1, 
+                name: entry.name.clone(),
+                time: entry.time,
+                level: entry.level.clone(),
+            })
+            .collect();
+
+        entries.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(std::cmp::Ordering::Equal));
+        
+        for (i, entry) in entries.iter_mut().enumerate() {
+            entry.position = i + 1;
+        }
+
+        leaderboards.insert(level.clone(), entries);
     }
 
-    Json(entries)
+    Json(leaderboards)
 }
 
 async fn delete_all(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
-    let mut leaderboard = state.heap.lock().await;
-    leaderboard.clear();
+    let mut heaps = state.heaps.lock().await;
+    heaps.clear();
     
-    // Save empty leaderboard
-    state.persist.save("leaderboard", Vec::<Entry>::new())
-        .expect("Failed to save leaderboard");
+    // Save empty leaderboards
+    state.persist.save("leaderboards", HashMap::<String, Vec<Entry>>::new())
+        .expect("Failed to save leaderboards");
     
     (StatusCode::OK, Json("All entries deleted successfully")).into_response()
 }
 
 async fn delete_entry(
     State(state): State<AppState>,
-    Path(name): Path<String>,
+    Path((level, name)): Path<(String, String)>,
 ) -> impl IntoResponse {
     if name.is_empty() || name.len() > 20 {
         return (
@@ -148,42 +153,52 @@ async fn delete_entry(
         ).into_response();
     }
 
-    let mut leaderboard = state.heap.lock().await;
-    let initial_len = leaderboard.len();
-    
-    leaderboard.retain(|Reverse(entry)| entry.name != name);
-    
-    if leaderboard.len() < initial_len {
-        let entries: Vec<Entry> = leaderboard
-            .iter()
-            .map(|Reverse(entry)| Entry {
-                name: entry.name.clone(),
-                time: entry.time,
-            })
-            .collect();
-        
-        state.persist.save("leaderboard", entries)
-            .expect("Failed to save leaderboard");
-        
-        (StatusCode::OK, Json("Entry deleted successfully")).into_response()
-    } else {
-        (StatusCode::NOT_FOUND, Json("Entry not found")).into_response()
+    if level.is_empty() {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json("Invalid level")
+        ).into_response();
     }
+
+    let mut heaps = state.heaps.lock().await;
+    
+    if let Some(leaderboard) = heaps.get_mut(&level) {
+        let initial_len = leaderboard.len();
+        
+        leaderboard.retain(|Reverse(entry)| entry.name != name);
+        
+        if leaderboard.len() < initial_len {
+            let entries: HashMap<String, Vec<Entry>> = heaps
+                .iter()
+                .map(|(level, heap)| {
+                    (level.clone(), heap.iter().map(|Reverse(entry)| entry.clone()).collect())
+                })
+                .collect();
+            
+            state.persist.save("leaderboards", entries)
+                .expect("Failed to save leaderboards");
+            
+            return (StatusCode::OK, Json("Entry deleted successfully")).into_response();
+        }
+    }
+
+    (StatusCode::NOT_FOUND, Json("Entry not found")).into_response()
 }
 
 #[shuttle_runtime::main]
 async fn axum(
     #[shuttle_persist::Persist] persist: PersistInstance,
 ) -> shuttle_axum::ShuttleAxum {
-    let mut heap = BinaryHeap::new();
-    if let Ok(entries) = persist.load::<Vec<Entry>>("leaderboard") {
-        for entry in entries {
-            heap.push(Reverse(entry));
+    let mut heaps = HashMap::new();
+    if let Ok(entries) = persist.load::<HashMap<String, Vec<Entry>>>("leaderboards") {
+        for (level, level_entries) in entries {
+            let heap = level_entries.into_iter().map(|entry| Reverse(entry)).collect();
+            heaps.insert(level, heap);
         }
     }
 
     let shared_state = AppState {
-        heap: Arc::new(Mutex::new(heap)),
+        heaps: Arc::new(Mutex::new(heaps)),
         persist,
     };
 
@@ -195,10 +210,11 @@ async fn axum(
     let router = Router::new()
         .route("/score", post(add_score))
         .route("/leaderboard", get(get_leaderboard))
-        .route("/entry/:name", delete(delete_entry))
+        .route("/entry/:level/:name", delete(delete_entry))
         .route("/clear", delete(delete_all))
         .with_state(shared_state)
         .layer(cors);
 
     Ok(router.into())
 }
+

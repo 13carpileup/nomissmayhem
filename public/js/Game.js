@@ -14,6 +14,7 @@ import { Enemy, EnemyFactory } from './structs/Enemy.js';
 import { allRooms } from './levels.js';
 import { createStartScreen } from './ui/startscreen.js';
 import { gameOver } from './ui/gameover.js';  
+import { Leaderboard } from './ui/leaderboard.js';
 
 export class Game {
   constructor() {
@@ -75,6 +76,7 @@ export class Game {
   }
 
   startGame(level) {
+    new Leaderboard(this.currentLevel);
     this.moneyElement = document.getElementById('money');
     this.moneyElement.textContent = `COINS: 0`;
     this.lastTime = 0;
@@ -716,6 +718,7 @@ gameWin() {
                   body: JSON.stringify({
                       name: nameInput.value.trim(),
                       time: time,
+                      level: this.currentLevel.toString()
                   })
               });
               
@@ -725,7 +728,8 @@ gameWin() {
                   nameInput.disabled = true;
                   
                   // Show leaderboard
-                  const leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
+                  let leaderboardData = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard').then(res => res.json());
+                  leaderboardData = leaderboardData[this.currentLevel];
                   leaderboardData.splice(12);
                   const leaderboardDiv = document.createElement('div');
                   leaderboardDiv.style.cssText = `

@@ -7,4 +7,3 @@ console.log("starting!!!!");
 
 
 new Game();
-new Leaderboard();
