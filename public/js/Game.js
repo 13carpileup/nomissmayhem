@@ -758,7 +758,7 @@ gameWin() {
 
   let time = this.elapsedTime;
   submitButton.onclick = async () => {
-      if (nameInput.value.trim()&&!submitButton.disabled) {
+      if (nameInput.value.trim() && !submitButton.disabled) {
           try {
               submitButton.disabled = true;
               const response = await fetch('https://nomissmayhem.shuttleapp.rs/score', {
@@ -773,9 +773,8 @@ gameWin() {
                   })
               });
               
-              if (response.ok && !submitButton.disabled) {
+              if (response.ok) {
                   submitButton.textContent = 'SCORE SAVED!';
-                  submitButton.disabled = true;
                   nameInput.disabled = true;
                   
                   // Show leaderboard
