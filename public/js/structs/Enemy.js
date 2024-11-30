@@ -189,7 +189,7 @@ export class LaserEnemy extends Enemy {
         this.type = 'laser';
         this.color = '#9c19ff';
         this.isCharging = false;
-        this.chargeTime = 200; // ms
+        this.chargeTime = 300; // ms
         this.cooldown = 2500;
         this.lastShot = 0;
         this.fired = 0;

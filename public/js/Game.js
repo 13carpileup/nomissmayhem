@@ -410,10 +410,10 @@ export class Game {
         if (this.player.spread) {
           // let newAngle = angle + Math.PI;
           this.getCurrentRoom().projectiles.push(
-            new Projectile(this.player.x, this.player.y, angle + Math.PI / 12, 35, 5)
+            new Projectile(this.player.x, this.player.y, angle + Math.PI / 18, 35, 5)
           );
           this.getCurrentRoom().projectiles.push(
-            new Projectile(this.player.x, this.player.y, angle - Math.PI / 12, 35, 5)
+            new Projectile(this.player.x, this.player.y, angle - Math.PI / 18, 35, 5)
           );
         }
   
