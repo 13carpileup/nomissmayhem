@@ -105,7 +105,7 @@ const d41 = new Room(
     [  
         EnemyFactory.createEnemy('laser', 200, 100, 'health'),
         EnemyFactory.createEnemy('regular', 250, 300, 'health'),
-        EnemyFactory.createEnemy('regular', 500, 100, 'health'),
+        EnemyFactory.createEnemy('regular', 500, 100, 'health', false, true),
     ],
     "regular",
 );
@@ -116,7 +116,7 @@ const d42 = new Room(
     [  
         EnemyFactory.createEnemy('shielded', 500, 300, 'health'),
         EnemyFactory.createEnemy('regular', 300, 300, 'health'),
-        EnemyFactory.createEnemy('regular', 100, 300, 'health'),
+        EnemyFactory.createEnemy('regular', 100, 300, 'health', false, true),
     ],
     "regular",
 );
@@ -170,7 +170,7 @@ const d53 = new Room(
     [  
         EnemyFactory.createEnemy('shielded', 100, 300, 'health'),
         EnemyFactory.createEnemy('regular', 350, 100, 'health'),
-        EnemyFactory.createEnemy('regular', 100, 350, 'health'),
+        EnemyFactory.createEnemy('regular', 100, 350, 'health', false, true),
     ],
     "regular",
 );
@@ -180,7 +180,7 @@ const d34 = new Room(
     createTravel(['door', 5], ['wall', 6], ['wall', 5], ['door', 5]), 
     [  
         EnemyFactory.createEnemy('shielded', 550, 100, 'health'),
-        EnemyFactory.createEnemy('regular', 120, 350, 'health'),
+        EnemyFactory.createEnemy('regular', 120, 350, 'health', false, true),
     ],
     "regular",
 );
