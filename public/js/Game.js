@@ -29,6 +29,7 @@ export class Game {
     // Remove game over and win overlays
     if (this.gameOverOverlay) {
       this.gameOverOverlay.remove();  
+      this.gameOverOverlay = null;
     }
     if (this.winOverlay) {
       this.winOverlay.remove();
@@ -91,9 +92,11 @@ export class Game {
   startGame(level) {
     if (this.gameOverOverlay) {
       this.gameOverOverlay.remove();  
+      this.gameOverOverlay = null
     }
     if (this.winOverlay) {
       this.winOverlay.remove();
+      this.winOverlay = null
     }
 
     this.leaderboard.updateLevel(level);
