@@ -187,7 +187,7 @@ export class LaserEnemy extends Enemy {
     constructor(x, y, id, key, healing, radius) {
         super(x, y, id, key, healing, radius);
         this.type = 'laser';
-        this.color = '#9c19ff';
+        this.color = key ? '#f5c542' : '#9c19ff';
         this.isCharging = false;
         this.chargeTime = 300; // ms
         this.cooldown = 2500;
