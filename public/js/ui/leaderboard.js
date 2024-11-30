@@ -2,14 +2,20 @@ export class Leaderboard {
     constructor(currentLevel) {
         this.leaderboardElement = document.getElementById('leaderboard-entries');
         this.updateInterval = 5000; // Update every 5 seconds
-        this.startUpdating(currentLevel);
+        this.online = 1;
+        this.level = currentLevel
+        this.startUpdating();
     }
 
-    async updateLeaderboard(currentLevel) {
+    async updateLeaderboard() {
+        if (!this.online) {
+            return 0;
+        }
         try {
             const response = await fetch('https://nomissmayhem.shuttleapp.rs/leaderboard');
             let leaderboardData = await response.json();
-            leaderboardData = leaderboardData[currentLevel]
+            leaderboardData = leaderboardData[this.currentLevel]
+            console.log(leaderboardData)
             leaderboardData.splice(10);
             
             this.leaderboardElement.innerHTML = leaderboardData
@@ -24,11 +30,16 @@ export class Leaderboard {
         }
     }
 
-    startUpdating(currentLevel) {
+    startUpdating() {
         // Initial update
-        this.updateLeaderboard(currentLevel);
+        this.updateLeaderboard(this.currentLevel);
         
         // Set up periodic updates
-        setInterval(() => this.updateLeaderboard(currentLevel), this.updateInterval);
+        setInterval(() => this.updateLeaderboard(this.currentLevel), this.updateInterval);
+    }
+
+    updateLevel(newLevel) {
+        // Initial update
+        this.currentLevel = newLevel;
     }
 }

@@ -19,6 +19,7 @@ import { Leaderboard } from './ui/leaderboard.js';
 export class Game {
   constructor() {
     this.currentLevel = 0;
+    this.leaderboard = new Leaderboard(0);
 
     this.init();
   }
@@ -76,7 +77,7 @@ export class Game {
   }
 
   startGame(level) {
-    new Leaderboard(this.currentLevel);
+    this.leaderboard.updateLevel(level);
     this.moneyElement = document.getElementById('money');
     this.moneyElement.textContent = `COINS: 0`;
     this.lastTime = 0;
