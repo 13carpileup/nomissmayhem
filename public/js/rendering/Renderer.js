@@ -166,10 +166,36 @@ export class Renderer {
     if (enemies && enemies.length > 0) {
       enemies.forEach(enemy => {
         if (enemy.isActive) {
-
           drawPixelPlayer(this.ctx, enemy.x, enemy.y, (enemy.radius / 20) * 42, enemy.color);
-
-
+    
+          // Draw shield if enemy is shielded type
+          if (enemy.type === 'shielded' && enemy.shieldActive) {
+            this.ctx.beginPath();
+            this.ctx.arc(
+              enemy.x,
+              enemy.y,
+              enemy.radius + 10, // Slightly larger than enemy radius
+              enemy.shieldAngle - enemy.shieldArc / 2,
+              enemy.shieldAngle + enemy.shieldArc / 2
+            );
+            this.ctx.lineWidth = 5;
+            this.ctx.strokeStyle = 'rgba(150, 200, 255, 0.6)'; // Light blue semi-transparent
+            this.ctx.stroke();
+    
+            // Add shield glow effect
+            this.ctx.beginPath();
+            this.ctx.arc(
+              enemy.x,
+              enemy.y,
+              enemy.radius + 10,
+              enemy.shieldAngle - enemy.shieldArc / 2,
+              enemy.shieldAngle + enemy.shieldArc / 2
+            );
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = 'rgba(200, 230, 255, 0.8)'; // Brighter blue for glow
+            this.ctx.stroke();
+          }
+    
           // Draw health bar
           this.ctx.fillStyle = 'red';
           this.ctx.fillRect(enemy.x - 25, enemy.y - enemy.radius - 10, 50, 5);

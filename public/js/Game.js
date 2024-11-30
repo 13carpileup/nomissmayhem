@@ -5,7 +5,7 @@ import { checkCollision, Clone } from './util/utils.js';
 import { checkDoorCollision, preloadRooms } from './structs/Rooms.js';
 import { Music } from './util/Music.js';
 import { Key } from './structs/Key.js';
-import { CANVAS, BULLETS_LIMITER, PLAYER } from './constants.js';
+import { CANVAS, BULLETS_LIMITER, PLAYER, PROJECTILE } from './constants.js';
 import { Coin } from './structs/Coin.js';
 import { checkCardCollision } from './structs/Store.js';
 import { createMinimap, updateMinimap } from './ui/minimap.js';
@@ -268,13 +268,14 @@ export class Game {
   }
 
   checkDoor(door) {
-    if ((door.type=='door') && door.open==1) {
+    if (door.open==1 && (door.type=='door' || door.type=='key')) {
       return true;
     }
     //console.log(this.player.keys)
 
     if ((door.type=='key') && this.player.keys.includes("key1")) {
-      this.player.keys.pop( );
+      this.player.keys.pop();
+      door.open = 1;
       return true;
     }
 
@@ -425,28 +426,62 @@ export class Game {
 
         // Check collision with player's projectiles
         this.getCurrentRoom().projectiles.forEach((proj, projIndex) => {
-          if (!proj.isEnemyProjectile && checkCollision(enemy, proj)) {
+          if (!proj.isEnemyProjectile && enemy.type == 'shielded') {
+            let res = enemy.checkBulletCollision(proj);
+            
+            enemy.radius += 5;
+            // REFLECT OFF CIRCULAR ENEMY
+            if (checkCollision(enemy, proj) && res) {
+                // Calculate angle between projectile and enemy center
+                const collisionAngle = Math.atan2(
+                    proj.y - enemy.y,
+                    proj.x - enemy.x
+                );
+                
+                // Calculate reflection angle based on shield angle
+                const reflectionAngle = 2 * enemy.shieldAngle - collisionAngle;
+                
+                // Update projectile velocity
+                proj.dx = PROJECTILE.SPEED * Math.cos(reflectionAngle);
+                proj.dy = PROJECTILE.SPEED * Math.sin(reflectionAngle);
+                
+                // Move projectile slightly away from enemy to prevent multiple collisions
+                proj.x = enemy.x + (enemy.radius + proj.radius + 1) * Math.cos(collisionAngle);
+                proj.y = enemy.y + (enemy.radius + proj.radius + 1) * Math.sin(collisionAngle);
+                
+                // Increment bounce counter
+                proj.bounces++;
+            }
+            enemy.radius -= 5;
+            //ENEMY TAKE DAMAGE
+            if (checkCollision(enemy, proj)) {
+                enemy.takeDamage(20);
+                this.getCurrentRoom().projectiles.splice(projIndex, 1);
+            }
+        }
+
+          else if (!proj.isEnemyProjectile && checkCollision(enemy, proj)) {
             enemy.takeDamage(20);
             this.getCurrentRoom().projectiles.splice(projIndex, 1);
-            
-            // Drop coin when enemy dies
-            if (!enemy.isActive) {
-              console.log("enemy", enemy);
-              const coin = new Coin(enemy.x, enemy.y, enemy.coinDrop.value, enemy.coinDrop.type);
-              this.getCurrentRoom().coins.push(coin);
-              if (enemy.hasKey) {
-                console.log("dropping key");
-                const key = new Key(enemy.id, enemy.x, enemy.y);
-                this.getCurrentRoom().keys.push(key);
-              }
-              if (enemy.healing) {
-                console.log("dropping health");
-                const healing = new Health(enemy.id, enemy.x, enemy.y);
-                this.getCurrentRoom().health.push(healing)
-              }
-              console.log('Created coin:', coin);
-              console.log('Current room coins:', this.getCurrentRoom().coins);
+          }
+
+          // Drop coin when enemy dies
+          if (!enemy.isActive) {
+            console.log("enemy", enemy);
+            const coin = new Coin(enemy.x, enemy.y, enemy.coinDrop.value, enemy.coinDrop.type);
+            this.getCurrentRoom().coins.push(coin);
+            if (enemy.hasKey) {
+              console.log("dropping key");
+              const key = new Key(enemy.id, enemy.x, enemy.y);
+              this.getCurrentRoom().keys.push(key);
             }
+            if (enemy.healing) {
+              console.log("dropping health");
+              const healing = new Health(enemy.id, enemy.x, enemy.y);
+              this.getCurrentRoom().health.push(healing)
+            }
+            console.log('Created coin:', coin);
+            console.log('Current room coins:', this.getCurrentRoom().coins);
           }
         });
       } else {

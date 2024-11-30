@@ -65,55 +65,12 @@ export class Enemy {
     }
 }
 
-// Shielded Enemy
-export class ShieldedEnemy extends Enemy {
-    constructor(x, y) {
-        super(x, y);
-        this.type = 'shielded';
-        this.color = '#00ff00';
-        this.shieldActive = true;
-        this.shieldAngle = 0; // Shield facing angle
-        this.shieldArc = Math.PI / 2; // Shield covers 90 degrees
-        this.coinDrop = {
-            type: 'silver',
-            value: 2
-        };
-    }
 
-    update(player) {
-        super.update(player);
-        // Update shield angle to face player
-        this.shieldAngle = Math.atan2(player.y - this.y, player.x - this.x);
-    }
-
-    checkBulletCollision(projectile) {
-        // Implement shield logic here
-        // Return true if bullet should bounce, false if it should hit
-    }
-}
-
-// Reflector Enemy
-export class ReflectorEnemy extends ShieldedEnemy {
-    constructor(x, y) {
-        super(x, y);
-        this.type = 'reflector';
-        this.color = '#0000ff';
-        this.coinDrop = {
-            type: 'gold',
-            value: 5
-        };
-    }
-
-    reflectBullet(projectile) {
-        // Implement bullet reflection logic
-        return new Projectile(this.x, this.y, Math.PI + projectile.angle, projectile.speed);
-    }
-}
 
 // Attacker Enemy
 export class AttackerEnemy extends Enemy {
-    constructor(x, y) {
-        super(x, y);
+    constructor(x, y, id, key, healing, radius) {
+        super(x, y, id, key, healing, radius);
         this.type = 'attacker';
         this.color = '#ff00ff';
         this.attackCooldown = 2000; // ms
@@ -143,6 +100,85 @@ export class AttackerEnemy extends Enemy {
         const projectile = new Projectile(this.x, this.y, angle, this.projectileSpeed, 10);
         projectile.isEnemyProjectile = true; // Mark as enemy projectile
         return projectile;
+    }
+}
+
+// Shielded Enemy
+export class ShieldedEnemy extends Enemy {
+    constructor(x, y) {
+        super(x, y);
+        this.type = 'shielded';
+        this.color = '#00ff00';
+        this.shieldActive = true;
+        this.shieldAngle = 0; // Shield facing angle
+        this.shieldArc = Math.PI / 2; // Shield covers 90 degrees
+        this.attackCooldown = 2000; // ms
+        this.projectileSpeed = 6; // Projectile speed
+        this.minDistanceFromPlayer = this.radius * 15; // Increased distance for attacker
+        this.lastAttack = 0;
+        this.coinDrop = {
+            type: 'silver',
+            value: 2
+        };
+    }
+
+    update(player, gameTime) {
+        super.update(player);
+        // Update shield angle to face player
+        this.shieldAngle = Math.atan2(player.y - this.y, player.x - this.x);
+
+        if (gameTime - this.lastAttack >= this.attackCooldown) {
+            this.lastAttack = gameTime;
+            return this.attack(player);
+        }
+        //console.log("shield: ", this.shieldAngle);
+    }
+
+    checkBulletCollision(projectile) {
+        const angle = Math.atan2(
+            projectile.y - this.y,
+            projectile.x - this.x
+        );
+
+        if (Math.abs(angle - this.shieldAngle) <= (this.shieldArc / 2)) {
+            //console.log("REFLECT");
+            return 1;
+        }
+
+        //console.log("NO REFLECT")
+
+        return 0;
+
+        //console.log("bullet: ", angle);
+        // Implement shield logic here
+        // Return true if bullet should bounce, false if it should hit
+    }
+
+
+    attack(player) {
+        // Calculate angle to player for accurate shooting
+        const angle = Math.atan2(player.y - this.y, player.x - this.x);
+        const projectile = new Projectile(this.x, this.y, angle, this.projectileSpeed, 10);
+        projectile.isEnemyProjectile = true; // Mark as enemy projectile
+        return projectile;
+    }
+}
+
+// Reflector Enemy
+export class ReflectorEnemy extends ShieldedEnemy {
+    constructor(x, y) {
+        super(x, y);
+        this.type = 'reflector';
+        this.color = '#0000ff';
+        this.coinDrop = {
+            type: 'gold',
+            value: 5
+        };
+    }
+
+    reflectBullet(projectile) {
+        // Implement bullet reflection logic
+        return new Projectile(this.x, this.y, Math.PI + projectile.angle, projectile.speed);
     }
 }
 
