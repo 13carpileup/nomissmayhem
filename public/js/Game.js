@@ -77,6 +77,10 @@ export class Game {
   }
 
   startGame(level) {
+    if (this.gameOverOverlay) {
+      this.gameOverOverlay.remove();  
+    }
+
     this.leaderboard.updateLevel(level);
     this.moneyElement = document.getElementById('money');
     this.moneyElement.textContent = `COINS: 0`;
