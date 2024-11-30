@@ -72,7 +72,7 @@ export class AttackerEnemy extends Enemy {
     constructor(x, y, id, key, healing, radius) {
         super(x, y, id, key, healing, radius);
         this.type = 'attacker';
-        this.color = '#ff00ff';
+        this.color = key ? '#f5c542' : '#ff00ff';
         this.attackCooldown = 2000; // ms
         this.lastAttack = 0;
         this.minDistanceFromPlayer = this.radius * 12; // Increased distance for attacker
@@ -105,10 +105,10 @@ export class AttackerEnemy extends Enemy {
 
 // Shielded Enemy
 export class ShieldedEnemy extends Enemy {
-    constructor(x, y) {
-        super(x, y);
+    constructor(x, y, id, key, healing, radius) {
+        super(x, y, id, key, healing, radius);
         this.type = 'shielded';
-        this.color = '#00ff00';
+        this.color = key ? '#f5c542' : '#00ff00';
         this.shieldActive = true;
         this.shieldAngle = 0; // Shield facing angle
         this.shieldArc = Math.PI / 2; // Shield covers 90 degrees
