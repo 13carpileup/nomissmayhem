@@ -44,6 +44,9 @@ export class Game {
     this.lastBulletTime = Date.now();
 
     this.music = new Music();
+    
+    this.shootSound = new Audio('./assets/shoot2.mp3');
+    
 
 
 
@@ -88,6 +91,14 @@ export class Game {
     
     this.createStartScreen(); 
   }
+
+
+  playSound() {
+    let soundClone = this.shootSound.cloneNode();
+    soundClone.volume = 0.45;
+    soundClone.play();
+  }
+
 
   startGame(level) {
     if (this.gameOverOverlay) {
@@ -396,9 +407,7 @@ export class Game {
           this.mouseY - this.player.y,
           this.mouseX - this.player.x
         );
-        let shootSound = new Audio('./assets/shoot2.mp3');
-        shootSound.volume = 0.45
-        shootSound.play();
+        this.playSound(); 
         this.getCurrentRoom().projectiles.push(
           new Projectile(this.player.x, this.player.y, angle, 35, 5)
         );
