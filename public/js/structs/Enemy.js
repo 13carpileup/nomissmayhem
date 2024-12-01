@@ -69,8 +69,8 @@ export class Enemy {
 
 // Attacker Enemy
 export class AttackerEnemy extends Enemy {
-    constructor(x, y, id, key, healing, radius) {
-        super(x, y, id, key, healing, radius);
+    constructor(x, y, id, key, healing, radius, health) {
+        super(x, y, id, key, healing, radius, health);
         this.type = 'attacker';
         this.color = key ? '#f5c542' : '#ff00ff';
         this.attackCooldown = 1900 + Math.random() * 200; // ms
@@ -105,8 +105,8 @@ export class AttackerEnemy extends Enemy {
 
 // Shielded Enemy
 export class ShieldedEnemy extends Enemy {
-    constructor(x, y, id, key, healing, radius) {
-        super(x, y, id, key, healing, radius);
+    constructor(x, y, id, key, healing, radius, health) {
+        super(x, y, id, key, healing, radius, health);
         this.type = 'shielded';
         this.color = key ? '#f5c542' : '#00ff00';
         this.shieldActive = true;
@@ -168,8 +168,8 @@ export class ShieldedEnemy extends Enemy {
 
 // Reflector Enemy
 export class ReflectorEnemy extends ShieldedEnemy {
-    constructor(x, y, id, key, healing, radius) {
-        super(x, y, id, key, healing, radius);
+    constructor(x, y, id, key, healing, radius, health) {
+        super(x, y, id, key, healing, radius, health);
         this.type = 'reflector';
         this.color = key ? '#f5c542' : '#0000ff';
         this.coinDrop = {
@@ -186,8 +186,8 @@ export class ReflectorEnemy extends ShieldedEnemy {
 
 // Laser Enemy
 export class LaserEnemy extends Enemy {
-    constructor(x, y, id, key, healing, radius) {
-        super(x, y, id, key, healing, radius);
+    constructor(x, y, id, key, healing, radius, health) {
+        super(x, y, id, key, healing, radius, health);
         this.type = 'laser';
         this.color = key ? '#f5c542' : '#9c19ff';
         this.isCharging = false;
@@ -247,15 +247,15 @@ export class EnemyFactory {
             case 'regular':
                 return new Enemy(x, y, id, key, healing, radius, health);
             case 'shielded':
-                return new ShieldedEnemy(x, y, id, key, healing, radius);
+                return new ShieldedEnemy(x, y, id, key, healing, radius, health);
             case 'reflector':
-                return new ReflectorEnemy(x, y, id, key, healing, radius);
+                return new ReflectorEnemy(x, y, id, key, healing, radius, health);
             case 'attacker':
-                return new AttackerEnemy(x, y, id, key, healing, radius);
+                return new AttackerEnemy(x, y, id, key, healing, radius, health);
             case 'laser':
-                return new LaserEnemy(x, y, id, key, healing, radius);
+                return new LaserEnemy(x, y, id, key, healing, radius, health);
             default:
-                return new Enemy(x, y, id, key, healing, radius);
+                return new Enemy(x, y, id, key, healing, radius, health);
         }
     }
 }
