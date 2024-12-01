@@ -156,7 +156,7 @@ const d51 = new Room(
 
 const d52 = new Room(
     "/rooms/dungeon/d21.png", 
-    createTravel(['wall', 4], ['door', 6], ['door', 5], ['door', 5]), 
+    createTravel(['door', 4], ['door', 6], ['door', 5], ['wall', 5]), 
     [  
         EnemyFactory.createEnemy('laser', 300, 300, 'health'),
         EnemyFactory.createEnemy('regular', 350, 100, 'health'),
