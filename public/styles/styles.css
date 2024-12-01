@@ -33,6 +33,10 @@ body {
     align-items: center;
 }
 
+#game-container {
+    opacity:0;
+}
+
 #gameCanvas {
     background: #0a0a12;
     width: 600px;

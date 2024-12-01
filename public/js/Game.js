@@ -109,6 +109,10 @@ export class Game {
 
 
   startGame(level) {
+    let gameScreen = document.getElementById("game-container");
+    gameScreen.style.opacity = 1;
+
+
     if (this.gameOverOverlay) {
       this.gameOverOverlay.remove();  
       this.gameOverOverlay = null
@@ -452,7 +456,7 @@ export class Game {
 
           if (enemyProjectile) {
             this.getCurrentRoom().projectiles.push(enemyProjectile);
-            this.playEnemySound();
+            this.playEnemySound();  
           }
         }
 
