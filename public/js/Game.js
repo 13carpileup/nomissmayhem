@@ -625,12 +625,12 @@ export class Game {
       //console.log('checking')
       res = checkCardCollision(this.getCurrentRoom(), proj);
 
-      if (res) {
+      if (res && !this.getCurrentRoom().bought[res[0]]) {
         if (res[1][1] <= this.player.getMoney()) {
           this.player.addPowerup(res[1][0]);
           this.player.addMoney(-1*res[1][1]);
 
-          this.Rooms[this.roomPosition[0]][this.roomPosition[1]].bought[res[0]] = 1;
+          this.getCurrentRoom().bought[res[0]] = 1;
           this.getCurrentRoom().projectiles.splice(i, 1);
         }
 
