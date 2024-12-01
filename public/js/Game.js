@@ -46,12 +46,8 @@ export class Game {
     this.music = new Music();
     
     this.shootSound = new Audio('./assets/shoot2.mp3');
-    
-
-
-
     this.enemyShootSound = new Audio('./assets/shoot0.mp3');
-    this.enemyShootSound.volume = 0.6
+    this.laserSound = new Audio('./assets/laser.mp3');
 
     this.lastUpdate = Date.now();
 
@@ -95,6 +91,18 @@ export class Game {
 
   playSound() {
     let soundClone = this.shootSound.cloneNode();
+    soundClone.volume = 0.45;
+    soundClone.play();
+  }
+
+  playEnemySound() {
+    let soundClone = this.enemyShootSound.cloneNode();
+    soundClone.volume = 0.45;
+    soundClone.play();
+  }
+
+  playLaserSound() {
+    let soundClone = this.laserSound.cloneNode();
     soundClone.volume = 0.45;
     soundClone.play();
   }
@@ -444,9 +452,7 @@ export class Game {
 
           if (enemyProjectile) {
             this.getCurrentRoom().projectiles.push(enemyProjectile);
-            let shootSound = new Audio('./assets/shoot0.mp3');
-            shootSound.volume = 0.45
-            shootSound.play();
+            this.playEnemySound();
           }
         }
 
@@ -473,9 +479,7 @@ export class Game {
           }
           
           if (((Date.now() - laser.fireTime) >= laser.delay) && !laser.sound) {
-            let shootSound = new Audio('./assets/laser.mp3');
-            shootSound.volume = 0.45
-            shootSound.play();
+            this.playLaserSound();
             laser.sound = 1;
           }
 
