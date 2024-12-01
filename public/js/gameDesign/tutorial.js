@@ -30,7 +30,7 @@ const t41 = new Room(
 );
 
 const t42 = new Room(
-    "/rooms/dungeon/d23.png", 
+    "/rooms/tutorial/d23.png", 
     createTravel(['door', 0], ['wall', 0], ['door', 4], ['wall', 0]), 
     [  
         EnemyFactory.createEnemy('regular', 150, 100),
@@ -97,7 +97,7 @@ const t03 = new Room(
         EnemyFactory.createEnemy('regular', 500, 200),
         EnemyFactory.createEnemy('regular', 400, 100,'key1',  true, true),
     ],
-    "regular",
+    "regular",                                  
 );
 
 const t13 = new Room(
