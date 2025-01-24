@@ -2,7 +2,7 @@
 
 A fast paced, bullet hell, dungeon crawler game where _you are your own enemy_
 
-Play right now at [nomissmayhem](https://nomissmayhem.vercel.app) (desktop only.)
+Play right now at [nomissmayhem](https://nomissmayhem.vercel.app) (desktop only.). Made pretty much entirely in JavaScript: we don't know unity, so we just used the canvas API...
 
 ## Credits
 
